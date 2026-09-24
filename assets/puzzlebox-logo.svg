@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Puzzlebox logo</title>
+  <desc id="desc">A friendly green puzzle-piece character with a star</desc>
+  <rect width="512" height="512" rx="116" fill="#F8FAF2"/>
+  <ellipse cx="256" cy="416" rx="150" ry="24" fill="#3D7C16" opacity=".16"/>
+  <path fill="#3D7C16" d="M122 173c0-38 31-69 69-69h28c0-38 31-69 69-69s69 31 69 69c38 0 69 31 69 69v18c38 0 69 31 69 69s-31 69-69 69v29c0 38-31 69-69 69H191c-38 0-69-31-69-69v-29c-38 0-69-31-69-69s31-69 69-69z"/>
+  <ellipse cx="206" cy="229" rx="35" ry="43" fill="#fff"/>
+  <ellipse cx="307" cy="229" rx="35" ry="43" fill="#fff"/>
+  <circle cx="216" cy="238" r="12" fill="#3D7C16"/>
+  <circle cx="297" cy="238" r="12" fill="#3D7C16"/>
+  <path d="M209 296c26 31 69 31 95 0" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="16"/>
+  <path d="m410 71 12 30 31 12-31 12-12 31-12-31-31-12 31-12z" fill="#FFD568"/>
+</svg>

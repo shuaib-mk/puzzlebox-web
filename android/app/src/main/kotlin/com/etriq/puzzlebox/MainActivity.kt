@@ -1,4 +1,4 @@
-package com.puzzlebox.puzzlebox
+package com.etriq.puzzlebox
 
 import io.flutter.embedding.android.FlutterActivity
 

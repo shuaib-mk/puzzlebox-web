@@ -1,0 +1,9 @@
+flutter_launcher_icons:
+  android: true
+  ios: true
+  web:
+    generate: true
+    image_path: "assets/puzzlebox-logo.svg"
+  image_path: "assets/puzzlebox-logo.svg"
+  adaptive_icon_background: "#F8FAF2"
+  adaptive_icon_foreground: "assets/puzzlebox-logo.svg"

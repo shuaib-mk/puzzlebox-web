@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <!-- background -->
+    <path android:fillColor="#F8FAF2" android:pathData="M 116,0 h 280 a 116,116 0 0 1 116,116 v 280 a 116,116 0 0 1 -116,116 h -280 a 116,116 0 0 1 -116,-116 v -280 a 116,116 0 0 1 116,-116 z"/>
+    <!-- shadow ellipse -->
+    <path android:fillColor="#293D7C16" android:pathData="M 106,416 a 150,24 0 1,0 300,0 a 150,24 0 1,0 -300,0"/>
+    <!-- main body -->
+    <path android:fillColor="#3D7C16" android:pathData="M122 173c0-38 31-69 69-69h28c0-38 31-69 69-69s69 31 69 69c38 0 69 31 69 69v18c38 0 69 31 69 69s-31 69-69 69v29c0 38-31 69-69 69H191c-38 0-69-31-69-69v-29c-38 0-69-31-69-69s31-69 69-69z"/>
+    <!-- eyes bg -->
+    <path android:fillColor="#ffffff" android:pathData="M 171,229 a 35,43 0 1,0 70,0 a 35,43 0 1,0 -70,0"/>
+    <path android:fillColor="#ffffff" android:pathData="M 272,229 a 35,43 0 1,0 70,0 a 35,43 0 1,0 -70,0"/>
+    <!-- pupils -->
+    <path android:fillColor="#3D7C16" android:pathData="M 204,238 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0"/>
+    <path android:fillColor="#3D7C16" android:pathData="M 285,238 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0"/>
+    <!-- smile -->
+    <path android:strokeColor="#ffffff" android:strokeLineCap="round" android:strokeWidth="16" android:pathData="M209 296c26 31 69 31 95 0"/>
+    <!-- star -->
+    <path android:fillColor="#FFD568" android:pathData="m410 71 12 30 31 12-31 12-12 31-12-31-31-12 31-12z"/>
+</vector>

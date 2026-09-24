@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../core/providers/settings_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -96,6 +98,24 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: const Text('Use revealed clues in later guesses'),
             value: state.hardModeEnabled,
             onChanged: notifier.setHardModeEnabled,
+          ),
+          const SizedBox(height: 24),
+          const _Label('LEGAL'),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Privacy Policy'),
+            trailing: const Icon(Icons.open_in_new),
+            onTap: () async {
+              final uri = Uri.parse('https://puzzlebox.q04ti.dev/#privacy-policy');
+              if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && context.mounted) {
+                await Clipboard.setData(const ClipboardData(text: 'https://puzzlebox.q04ti.dev/#privacy-policy'));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Link copied')),
+                  );
+                }
+              }
+            },
           ),
         ],
       ),

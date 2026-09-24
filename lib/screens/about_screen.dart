@@ -68,6 +68,34 @@ class AboutScreen extends StatelessWidget {
           trailing: const Icon(Icons.open_in_new),
           onTap: () => _open(context, 'https://q04ti.dev'),
         ),
+        const SizedBox(height: 12),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Key Contributor',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'A massive thank you to Etriq for their brilliant collaboration and continuous support.',
+                  style: TextStyle(height: 1.5),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        ListTile(
+          leading: const Icon(Icons.language_rounded),
+          title: const Text('Etriq'),
+          subtitle: const Text('etriq.online'),
+          trailing: const Icon(Icons.open_in_new),
+          onTap: () => _open(context, 'https://etriq.online'),
+        ),
         ListTile(
           leading: const Icon(Icons.favorite_rounded),
           title: const Text('Buy q04ti a coffee'),

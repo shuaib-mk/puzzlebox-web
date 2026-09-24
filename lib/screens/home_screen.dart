@@ -14,7 +14,6 @@ import '../games/tiles/tiles_screen.dart';
 import '../games/letter_boxed/letter_boxed_screen.dart';
 import '../games/vertex/vertex_screen.dart';
 import '../games/chess/chess_screen.dart';
-import '../games/ludo/ludo_screen.dart';
 import '../core/widgets/puzzle_pal.dart';
 import '../core/widgets/pressable_scale.dart';
 import '../core/services/engagement_service.dart';
@@ -124,14 +123,6 @@ class _HomeState extends ConsumerState<HomeScreen> {
       Icons.extension_rounded,
       'Logic',
       const ChessScreen(),
-    ),
-    (
-      'ludo',
-      'Ludo',
-      'Roll the dice, race your tokens, and win.',
-      Icons.casino_rounded,
-      'Logic',
-      const LudoScreen(),
     ),
   ];
   @override
