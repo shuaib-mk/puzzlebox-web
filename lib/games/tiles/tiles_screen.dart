@@ -5,6 +5,7 @@ import '../../core/services/stats_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
+import '../../core/widgets/neo_toast.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
 
 class TileItem {
@@ -108,10 +109,11 @@ class _TilesScreenState extends ConsumerState<TilesScreen>
               recordPracticeWin();
             }
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Tiles Cleared! Round $_roundCount Complete! 🎉'),
-              ),
+            NeoToast.show(
+              context,
+              'Tiles Cleared! Round $_roundCount Complete! 🎉',
+              icon: Icons.emoji_events_rounded,
+              color: const Color(0xFF4ADE80),
             );
 
             if (mode == GameMode.daily) finishPuzzle();
@@ -120,11 +122,12 @@ class _TilesScreenState extends ConsumerState<TilesScreen>
           // Reset chain
           _comboChain = 0;
           _firstSelected = null;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Chain broken!'),
-              duration: Duration(milliseconds: 800),
-            ),
+          NeoToast.show(
+            context,
+            'Chain broken!',
+            icon: Icons.link_off_rounded,
+            color: const Color(0xFFF43F5E),
+            duration: const Duration(milliseconds: 1200),
           );
         }
       }
@@ -264,18 +267,12 @@ class _TilesScreenState extends ConsumerState<TilesScreen>
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerLow,
+                                  : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(
-                                        context,
-                                      ).colorScheme.outlineVariant,
-                                width: 2,
-                              ),
+                              border: Border.all(color: Colors.black, width: 2.5),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                              ],
                             ),
                             child: Center(
                               child: Text(

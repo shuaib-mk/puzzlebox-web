@@ -1,6 +1,6 @@
 # Feature checklist
 
-All eleven games: free unlimited mode; separate Daily mode; persistent difficulty; game-specific free hints; explicit Next; completion feedback; automatic continuation; saved progress; light/dark appearance; four palettes; offline operation.
+All fifteen games: free unlimited mode; separate Daily mode; persistent difficulty; game-specific free hints; explicit Next; completion feedback; automatic continuation; saved progress; light/dark appearance; four palettes; offline operation.
 
 | Game | Difficulty changes | Core controls / validation |
 |---|---|---|
@@ -15,6 +15,10 @@ All eleven games: free unlimited mode; separate Daily mode; persistent difficult
 | Tiles | Four / six / nine pairs | Guaranteed partners, combo scoring, match hint, fresh rounds |
 | Letter Boxed | Easy first-word assistance; Hard longer solution chain | Real words, side alternation, linked starts, twelve-letter coverage, clear/undo, known solution |
 | Vertex | Four / six / eight nodes and extra edges | Degree validation, add/remove edges, undo, known-solution route hint |
+| Chess | Puzzle set, AI strength, Pass & Play | Legal-move enforcement, tactics puzzles, undo, AI opponent |
+| Nonogram | 5×5 / 8×8 / 10×10 grids | Logically-solved boards, run clues, fill/mark, satisfied-line highlight, undo, hint |
+| Binary | 6×6 / 8×8 / 10×10 grids | Balanced counts, no-triple and no-duplicate-line enforcement, undo, hint |
+| Cages | 4×4 / 5×5 / 6×6 grids | Latin-square validity, cage arithmetic checking, undo, hint |
 
 ## Regression coverage
 
@@ -24,7 +28,8 @@ Release validation: 39 tests passed; Dart analyzer reported no issues.
 - 600 generated crossword boards: clue consistency at every crossing and unique entries.
 - 120 Letter Boxed chains: actual dictionary membership, full coverage, word linkage, alternating sides.
 - 200 winding Strands paths: coverage, adjacency, and preserved spanning prefix.
-- All eleven screens load and advance at 390×844 and 320×700.
+- All fifteen screens load and advance at 390×844 and 320×700.
+- Nonogram, Binary and Cages generators are checked for a provably unique solution across 90 seeds each.
 - Saved sequence seeds, idempotent completion totals, legacy-count migration, daily deduplication, streak gaps, and Daily Five loss/resume.
 - A Pips completion exercises counting and automatic transition through the UI.
 - Visual review of the home screen in all four palettes and representative game screens.

@@ -7,6 +7,7 @@ import '../../core/services/stats_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
+import '../../core/widgets/neo_toast.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
 
 class CategoryGroup {
@@ -197,17 +198,16 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
           _isGameOver = true;
           _recordLoss();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _categories.any(
-                      (c) => c.words.where(_selectedWords.contains).length == 3,
-                    )
-                    ? 'One away!'
-                    : 'Try another grouping.',
-              ),
-              duration: Duration(seconds: 1),
-            ),
+          NeoToast.show(
+            context,
+            _categories.any(
+                  (c) => c.words.where(_selectedWords.contains).length == 3,
+                )
+                ? 'One away!'
+                : 'Try another grouping.',
+            icon: Icons.hub_rounded,
+            color: const Color(0xFFF43F5E),
+            duration: const Duration(seconds: 2),
           );
         }
       }
@@ -327,27 +327,32 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
                   ..._solvedCategories.map(
                     (cat) => Container(
                       width: double.infinity,
-                      margin: EdgeInsets.only(bottom: 8),
-                      padding: EdgeInsets.all(14),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: cat.color,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: Colors.black, width: 2.5),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                        ],
                       ),
                       child: Column(
                         children: [
                           Text(
                             cat.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
                               color: Colors.black,
                               fontSize: 15,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             cat.words.join(', '),
-                            style: TextStyle(
-                              color: Colors.black87,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
                               fontSize: 13,
                             ),
                           ),
@@ -360,7 +365,7 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
                   if (_remainingWords.isNotEmpty)
                     Expanded(
                       child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           crossAxisSpacing: 8,
                           mainAxisSpacing: 8,
@@ -370,43 +375,30 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
                         itemBuilder: (context, index) {
                           final word = _remainingWords[index];
                           final isSelected = _selectedWords.contains(word);
+                          final isDark = Theme.of(context).brightness == Brightness.dark;
+
                           return GestureDetector(
                             onTap: () => _onWordTap(word),
                             child: AnimatedContainer(
-                              duration: MediaQuery.disableAnimationsOf(context)
-                                  ? Duration.zero
-                                  : const Duration(milliseconds: 160),
-                              curve: Curves.easeOutCubic,
+                              duration: const Duration(milliseconds: 150),
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(
-                                        context,
-                                      ).colorScheme.surfaceContainerLow,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                  width: 1.5,
-                                ),
+                                    : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.black, width: 2.2),
+                                boxShadow: const [
+                                  BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0),
+                                ],
                               ),
                               child: Center(
                                 child: Text(
                                   word,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: isSelected
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface
-                                        : Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
@@ -419,68 +411,87 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
                   // Mistakes remaining indicator
                   Wrap(
                     alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Text(
-                        'Tries: ',
+                      const Text(
+                        'Mistakes: ',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13,
                         ),
                       ),
                       ...List.generate(
                         4,
                         (i) => Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4),
-                          width: 12,
-                          height: 12,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 14,
+                          height: 14,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: i < _mistakesRemaining
-                                ? Theme.of(context).colorScheme.onSurfaceVariant
-                                : Theme.of(context).colorScheme.outlineVariant,
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.grey.shade400,
+                            border: Border.all(color: Colors.black, width: 1.5),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Action Buttons or Next Puzzle
                   if (shouldShowNextButton(_isGameOver)) ...[
                     ElevatedButton.icon(
-                      icon: Icon(Icons.arrow_forward_rounded),
-                      label: Text('Next Puzzle'),
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: const Text('Next Puzzle'),
                       onPressed: nextPuzzle,
                     ),
                   ] else ...[
                     Wrap(
                       alignment: WrapAlignment.center,
-                      spacing: 8,
-                      runSpacing: 8,
+                      spacing: 12,
+                      runSpacing: 10,
                       children: [
-                        OutlinedButton(
-                          onPressed: _shuffle,
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: Size(100, 44),
+                        GestureDetector(
+                          onTap: _shuffle,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.black, width: 2.2),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: const Text('Shuffle', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
                           ),
-                          child: Text('Shuffle'),
                         ),
-                        OutlinedButton(
-                          onPressed: _selectedWords.isEmpty
-                              ? null
-                              : _deselectAll,
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: Size(110, 44),
+                        GestureDetector(
+                          onTap: _selectedWords.isEmpty ? null : _deselectAll,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: _selectedWords.isEmpty ? Colors.grey.shade300 : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.black, width: 2.2),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: const Text('Deselect All', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
                           ),
-                          child: Text('Deselect All'),
                         ),
-                        ElevatedButton(
-                          onPressed: _selectedWords.length == 4 && !_isGameOver
-                              ? _submit
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(100, 44),
+                        GestureDetector(
+                          onTap: _selectedWords.length == 4 && !_isGameOver ? _submit : null,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: _selectedWords.length == 4 && !_isGameOver
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey.shade400,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.black, width: 2.2),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: const Text('Submit', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
                           ),
-                          child: Text('Submit'),
                         ),
                       ],
                     ),

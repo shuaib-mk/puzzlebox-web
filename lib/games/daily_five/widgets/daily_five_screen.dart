@@ -13,6 +13,9 @@ import 'keyboard_widget.dart';
 import 'result_modal.dart';
 
 import '../../../core/widgets/game_mode_toggle.dart';
+import '../../../core/widgets/neo_toast.dart';
+import '../../../core/widgets/neo_difficulty_bar.dart';
+import '../../../core/services/app_feedback_service.dart';
 
 /// Main screen for the Daily Five word-guessing game.
 class DailyFiveScreen extends ConsumerStatefulWidget {
@@ -58,15 +61,13 @@ class _DailyFiveScreenState extends ConsumerState<DailyFiveScreen> {
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              game.phase == GamePhase.won
-                  ? 'Solved! A fresh word is next.'
-                  : 'The word was ${game.answer}. Try the next one.',
-            ),
-            duration: const Duration(seconds: 3),
-          ),
+        NeoToast.show(
+          context,
+          game.phase == GamePhase.won
+              ? 'Solved! A fresh word is next.'
+              : 'The word was ${game.answer}. Try the next one.',
+          icon: game.phase == GamePhase.won ? Icons.check_circle_rounded : Icons.info_rounded,
+          color: game.phase == GamePhase.won ? const Color(0xFF4ADE80) : const Color(0xFF38BDF8),
         );
         _nextTimer?.cancel();
         _nextTimer = Timer(
@@ -110,35 +111,17 @@ class _DailyFiveScreenState extends ConsumerState<DailyFiveScreen> {
             onModeChanged: (m) => _onModeChanged(m),
           ),
           Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: DropdownButton<String>(
-                    value: _difficulty,
-                    isExpanded: true,
-                    items: ['Easy', 'Medium', 'Hard']
-                        .map((d) => DropdownMenuItem(value: d, child: Text(d)))
-                        .toList(),
-                    onChanged: (d) async {
-                      if (d == null) return;
-                      await ref
-                          .read(sharedPreferencesProvider)
-                          .setString('difficulty_daily_five', d);
-                      if (!mounted) return;
-                      setState(() => _difficulty = d);
-                      _next();
-                    },
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: _next,
-                  icon: const Icon(Icons.skip_next),
-                  label: const Text('Next'),
-                ),
-              ],
-            ),
+          NeoDifficultyBar(
+            currentDifficulty: _difficulty,
+            onDifficultyChanged: (d) async {
+              await ref
+                  .read(sharedPreferencesProvider)
+                  .setString('difficulty_daily_five', d);
+              if (!mounted) return;
+              setState(() => _difficulty = d);
+              _next();
+            },
+            onNextPressed: _next,
           ),
           _ToastBar(mode: _mode),
           SizedBox(height: 12),
@@ -210,12 +193,11 @@ class _DailyFiveScreenState extends ConsumerState<DailyFiveScreen> {
         break;
       }
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Letter ${position + 1} is ${game.answer[position]}. Use it in your next guess.',
-        ),
-      ),
+    NeoToast.show(
+      context,
+      'Letter ${position + 1} is ${game.answer[position]}. Use it in your next guess.',
+      icon: Icons.lightbulb_rounded,
+      color: const Color(0xFFFACC15),
     );
   }
 
@@ -232,7 +214,7 @@ class _DailyFiveScreenState extends ConsumerState<DailyFiveScreen> {
   }
 }
 
-/// Transient top banner shown when an invalid word is submitted.
+/// Transient error/warning handler for Daily Five.
 class _ToastBar extends ConsumerStatefulWidget {
   final GameMode mode;
 
@@ -242,28 +224,8 @@ class _ToastBar extends ConsumerStatefulWidget {
   ConsumerState<_ToastBar> createState() => _ToastBarState();
 }
 
-class _ToastBarState extends ConsumerState<_ToastBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _anim;
+class _ToastBarState extends ConsumerState<_ToastBar> {
   int _lastShake = 0;
-  String _message = 'Check the word and any hard-mode clues';
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 200),
-    );
-    _anim = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,33 +233,22 @@ class _ToastBarState extends ConsumerState<_ToastBar>
 
     if (game.shakeCount > _lastShake) {
       _lastShake = game.shakeCount;
-      _message = game.currentInput.length < DailyFiveState.wordLength
+      final message = game.currentInput.length < DailyFiveState.wordLength
           ? 'Not enough letters'
           : 'Check the word and any hard-mode clues';
-      _ctrl.forward(from: 0).then((_) async {
-        await Future.delayed(Duration(milliseconds: 1200));
-        if (mounted) _ctrl.reverse();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        AppFeedbackService.error(ref);
+        NeoToast.show(
+          context,
+          message,
+          icon: Icons.warning_amber_rounded,
+          color: const Color(0xFFF43F5E),
+          duration: const Duration(seconds: 2),
+        );
       });
     }
 
-    return FadeTransition(
-      opacity: _anim,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 40),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          _message,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 }

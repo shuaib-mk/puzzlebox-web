@@ -4,6 +4,8 @@ import '../core/services/stats_service.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../core/services/practice_service.dart';
 import '../core/services/engagement_service.dart';
+import '../core/providers/settings_provider.dart';
+import '../core/theme/app_theme.dart';
 
 class UnifiedStatsScreen extends ConsumerWidget {
   final bool embedded;
@@ -11,192 +13,308 @@ class UnifiedStatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final statsService = ref.read(statsServiceProvider);
     ref.watch(engagementRevisionProvider);
     final engagement = ref.read(engagementServiceProvider).load();
     final practice = ref.read(practiceServiceProvider);
+    final settings = ref.watch(settingsProvider);
+    final primaryAccent = AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette);
 
     final games = [
-      {'type': 'daily_five', 'name': 'Daily Five', 'emoji': '🟩'},
-      {'type': 'connections', 'name': 'Connections', 'emoji': '🟨'},
-      {'type': 'spelling_bee', 'name': 'Spelling Bee', 'emoji': '🐝'},
-      {'type': 'crossword', 'name': 'The Crossword', 'emoji': '📰'},
-      {'type': 'mini_crossword', 'name': 'The Mini', 'emoji': '✏️'},
-      {'type': 'strands', 'name': 'Strands', 'emoji': '🔦'},
-      {'type': 'sudoku', 'name': 'Sudoku', 'emoji': '🔢'},
-      {'type': 'pips', 'name': 'Pips', 'emoji': '🎲'},
-      {'type': 'tiles', 'name': 'Tiles', 'emoji': '🧱'},
-      {'type': 'letter_boxed', 'name': 'Letter Boxed', 'emoji': '🔤'},
-      {'type': 'vertex', 'name': 'Vertex', 'emoji': '🔗'},
+      {'type': 'daily_five', 'name': 'Daily Five', 'icon': Icons.grid_on_rounded, 'color': const Color(0xFF4ADE80)},
+      {'type': 'connections', 'name': 'Connections', 'icon': Icons.hub_rounded, 'color': const Color(0xFFF43F5E)},
+      {'type': 'spelling_bee', 'name': 'Spelling Bee', 'icon': Icons.hive_rounded, 'color': const Color(0xFFFACC15)},
+      {'type': 'crossword', 'name': 'The Crossword', 'icon': Icons.border_all_rounded, 'color': const Color(0xFF38BDF8)},
+      {'type': 'mini_crossword', 'name': 'The Mini', 'icon': Icons.space_dashboard_rounded, 'color': const Color(0xFFC084FC)},
+      {'type': 'strands', 'name': 'Strands', 'icon': Icons.gesture_rounded, 'color': const Color(0xFFFB923C)},
+      {'type': 'sudoku', 'name': 'Sudoku', 'icon': Icons.apps_rounded, 'color': const Color(0xFF4ADE80)},
+      {'type': 'pips', 'name': 'Pips', 'icon': Icons.casino_rounded, 'color': const Color(0xFFF43F5E)},
+      {'type': 'tiles', 'name': 'Tiles', 'icon': Icons.layers_rounded, 'color': const Color(0xFFFACC15)},
+      {'type': 'letter_boxed', 'name': 'Letter Boxed', 'icon': Icons.crop_square_rounded, 'color': const Color(0xFF38BDF8)},
+      {'type': 'vertex', 'name': 'Vertex', 'icon': Icons.polyline_rounded, 'color': const Color(0xFFC084FC)},
+      {'type': 'chess', 'name': 'Chess', 'icon': Icons.extension_rounded, 'color': const Color(0xFFFB923C)},
+      {'type': 'nonogram', 'name': 'Nonogram', 'icon': Icons.table_chart_rounded, 'color': const Color(0xFF4ADE80)},
+      {'type': 'binary', 'name': 'Binary', 'icon': Icons.filter_2_rounded, 'color': const Color(0xFFF43F5E)},
+      {'type': 'cages', 'name': 'Cages', 'icon': Icons.calculate_rounded, 'color': const Color(0xFFFACC15)},
     ];
 
     final content = SingleChildScrollView(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Your progress',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w900),
+          // Header title container
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: primaryAccent,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.black, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                  ],
+                ),
+                child: const Icon(Icons.bar_chart_rounded, color: Colors.black, size: 24),
+              ),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Your Progress',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -.6,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.local_fire_department_rounded,
+                        size: 15,
+                        color: engagement.currentStreak > 0 ? const Color(0xFFF97316) : colors.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        engagement.currentStreak == 0
+                            ? 'Solve a puzzle today to start your streak.'
+                            : '${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            engagement.currentStreak == 0
-                ? 'Solve a puzzle today to start your streak.'
-                : '🔥 ${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 20),
-          // Header summary cards
+          const SizedBox(height: 24),
+
+          // Neo Summary Metric Strip
           Row(
             children: [
               Expanded(
-                child: _StatCard(
+                child: _NeoMetricCard(
                   title: 'Solved',
                   value: '${engagement.totalCompleted}',
-                  icon: Icons.extension_outlined,
+                  icon: Icons.check_circle_rounded,
+                  color: AppTheme.getAccentColor(const Color(0xFF4ADE80), settings.palette),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
-                child: _StatCard(
+                child: _NeoMetricCard(
                   title: 'Streak',
                   value: '${engagement.currentStreak}',
-                  icon: Icons.local_fire_department_outlined,
+                  icon: Icons.local_fire_department_rounded,
+                  color: AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
-                child: _StatCard(
-                  title: 'Play time',
+                child: _NeoMetricCard(
+                  title: 'Play Time',
                   value: _time(engagement.totalSeconds),
-                  icon: Icons.timer_outlined,
+                  icon: Icons.timer_rounded,
+                  color: AppTheme.getAccentColor(const Color(0xFF38BDF8), settings.palette),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 28),
+          const SizedBox(height: 32),
+
+          // Achievements Section
           Text(
             'ACHIEVEMENTS',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 12,
+            runSpacing: 12,
             children: [
-              _Badge(
+              _NeoBadge(
                 icon: Icons.flag_rounded,
-                title: 'First win',
+                title: 'First Win',
                 unlocked: engagement.totalCompleted >= 1,
+                color: AppTheme.getAccentColor(const Color(0xFF4ADE80), settings.palette),
               ),
-              _Badge(
+              _NeoBadge(
                 icon: Icons.workspace_premium_rounded,
-                title: 'Ten solved',
+                title: 'Ten Solved',
                 unlocked: engagement.totalCompleted >= 10,
+                color: AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette),
               ),
-              _Badge(
+              _NeoBadge(
                 icon: Icons.local_fire_department_rounded,
-                title: '7-day streak',
+                title: '7-Day Streak',
                 unlocked: engagement.bestStreak >= 7,
+                color: AppTheme.getAccentColor(const Color(0xFFF43F5E), settings.palette),
               ),
-              _Badge(
+              _NeoBadge(
                 icon: Icons.psychology_rounded,
-                title: 'Hard earned',
+                title: 'Hard Earned',
                 unlocked: engagement.hardWins >= 1,
+                color: AppTheme.getAccentColor(const Color(0xFFC084FC), settings.palette),
               ),
             ],
           ),
           if (engagement.history.isNotEmpty) ...[
-            const SizedBox(height: 28),
+            const SizedBox(height: 32),
             Text(
               'RECENT WINS',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
                 letterSpacing: 1.2,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: isDark ? Colors.white : Colors.black,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             ...engagement.history.reversed.take(5).map((item) {
               final game = games
-                  .cast<Map<String, String>>()
+                  .cast<Map<String, Object>>()
                   .where((g) => g['type'] == item['game'])
                   .firstOrNull;
               final seconds = item['seconds'] as int? ?? 0;
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const CircleAvatar(child: Icon(Icons.check_rounded)),
-                title: Text(game?['name'] ?? item['game'] as String),
-                subtitle: Text(
-                  '${item['difficulty']} • ${seconds > 0 ? '${seconds}s' : 'Completed'}',
+              final gameColor = AppTheme.getAccentColor((game?['color'] as Color?) ?? const Color(0xFF4ADE80), settings.palette);
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: gameColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 1.5),
+                    ),
+                    child: const Icon(Icons.check_rounded, color: Colors.black, size: 18),
+                  ),
+                  title: Text(
+                    (game?['name'] as String?) ?? item['game'] as String,
+                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
+                  ),
+                  subtitle: Text(
+                    '${item['difficulty']} • ${seconds > 0 ? '${seconds}s' : 'Completed'}',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.onSurfaceVariant),
+                  ),
                 ),
               );
             }),
           ],
-          SizedBox(height: 28),
+          const SizedBox(height: 32),
+
+          // Game Breakdown
           Text(
             'GAME BREAKDOWN',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 14),
 
           ...games.map((g) {
-            final st = statsService.loadStats(g['type']!);
+            final st = statsService.loadStats(g['type'] as String);
+            final gameColor = AppTheme.getAccentColor(g['color'] as Color, settings.palette);
+            final winPct = st.winPercentage.round();
+
             return Container(
-              margin: EdgeInsets.only(bottom: 12),
-              padding: EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
+                border: Border.all(color: Colors.black, width: 2.2),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                ],
               ),
               child: Row(
                 children: [
-                  Text(g['emoji']!, style: TextStyle(fontSize: 24)),
-                  SizedBox(width: 16),
+                  // Minimal icon container with subtle pastel background and 1.5px black border
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: gameColor.withOpacity(0.25),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.black, width: 1.8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      g['icon'] as IconData,
+                      color: isDark ? Colors.white : Colors.black,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          g['name']!,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                          g['name'] as String,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14.5,
+                            letterSpacing: -.2,
+                          ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
-                          'Daily ${st.gamesPlayed}  •  Unlimited ${practice.getSolvedCount(g['type']!)}',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
+                          'Daily ${st.gamesPlayed}  •  Unlimited ${practice.getSolvedCount(g['type'] as String)}',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w700,
+                            color: colors.onSurfaceVariant,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Text(
-                    '${st.winPercentage.round()}%',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                  // Minimal sleek percentage badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: winPct > 0
+                          ? gameColor
+                          : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9)),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black, width: 1.5),
+                    ),
+                    child: Text(
+                      '$winPct%',
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w900,
+                        color: winPct > 0 ? Colors.black : (isDark ? Colors.white70 : Colors.black87),
+                      ),
                     ),
                   ),
                 ],
@@ -206,6 +324,7 @@ class UnifiedStatsScreen extends ConsumerWidget {
         ],
       ),
     );
+
     if (embedded) return SafeArea(child: content);
     return AppScaffold(
       title: 'Statistics',
@@ -215,89 +334,120 @@ class UnifiedStatsScreen extends ConsumerWidget {
   }
 }
 
-class _Badge extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final bool unlocked;
-  const _Badge({
-    required this.icon,
-    required this.title,
-    required this.unlocked,
-  });
-  @override
-  Widget build(BuildContext context) => AnimatedOpacity(
-    opacity: unlocked ? 1 : .38,
-    duration: const Duration(milliseconds: 250),
-    child: Container(
-      width: 102,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(
-        color: unlocked
-            ? Theme.of(context).colorScheme.primaryContainer
-            : Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 28),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-String _time(int seconds) {
-  if (seconds < 60) return '${seconds}s';
-  final minutes = seconds ~/ 60;
-  return minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h ${minutes % 60}m';
-}
-
-class _StatCard extends StatelessWidget {
+class _NeoMetricCard extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
+  final Color color;
 
-  const _StatCard({
+  const _NeoMetricCard({
     required this.title,
     required this.value,
     required this.icon,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.black, width: 2.5),
+        boxShadow: const [
+          BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 24),
-          SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black, width: 1.5),
+            ),
+            child: Icon(icon, color: Colors.black, size: 18),
+          ),
+          const SizedBox(height: 8),
           Text(
             value,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              color: isDark ? Colors.white : Colors.black,
+              letterSpacing: -.4,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             title,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF525252),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class _NeoBadge extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final bool unlocked;
+  final Color color;
+
+  const _NeoBadge({
+    required this.icon,
+    required this.title,
+    required this.unlocked,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AnimatedOpacity(
+      opacity: unlocked ? 1 : .4,
+      duration: const Duration(milliseconds: 250),
+      child: Container(
+        width: 104,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+        decoration: BoxDecoration(
+          color: unlocked ? color : (isDark ? const Color(0xFF1E293B) : Colors.white),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.black, width: 2.5),
+          boxShadow: unlocked
+              ? const [BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0)]
+              : null,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 26, color: unlocked ? Colors.black : (isDark ? Colors.white : Colors.black)),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 11.5,
+                color: unlocked ? Colors.black : (isDark ? Colors.white : Colors.black),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _time(int seconds) {
+  if (seconds < 60) return '${seconds}s';
+  final minutes = seconds ~/ 60;
+  return minutes < 60 ? '${minutes}m' : '${minutes ~/ 60}h ${minutes % 60}m';
 }

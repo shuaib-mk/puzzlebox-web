@@ -9,8 +9,9 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 /// Persisted app-wide settings.
 class SettingsNotifier extends Notifier<SettingsState> {
   Future<void> setPalette(int value) async {
-    await ref.read(sharedPreferencesProvider).setInt('settings_palette', value);
-    state = state.copyWith(palette: value);
+    final clamped = value.clamp(0, 7);
+    await ref.read(sharedPreferencesProvider).setInt('settings_palette', clamped);
+    state = state.copyWith(palette: clamped);
   }
 
   static const _themeKey = 'settings_theme_mode';
@@ -23,13 +24,13 @@ class SettingsNotifier extends Notifier<SettingsState> {
   SettingsState build() {
     final prefs = ref.watch(sharedPreferencesProvider);
     final themeIndex = prefs.getInt(_themeKey) ?? ThemeMode.light.index;
-    final haptics = prefs.getBool(_hapticsKey) ?? true;
+    final haptics = prefs.getBool(_hapticsKey) ?? false;
     final hardMode = prefs.getBool(_hardModeKey) ?? false;
-    final sound = prefs.getBool(_soundKey) ?? true;
+    final sound = prefs.getBool(_soundKey) ?? false;
     final defaultDifficulty = prefs.getString(_difficultyKey) ?? 'Medium';
     return SettingsState(
       themeMode: ThemeMode.values[themeIndex.clamp(0, 2)],
-      palette: (prefs.getInt('settings_palette') ?? 1).clamp(0, 3),
+      palette: (prefs.getInt('settings_palette') ?? 7).clamp(0, 7),
       hapticsEnabled: haptics,
       hardModeEnabled: hardMode,
       soundEnabled: sound,
@@ -83,11 +84,11 @@ class SettingsState {
   final String defaultDifficulty;
 
   const SettingsState({
-    this.palette = 0,
+    this.palette = 7,
     required this.themeMode,
-    required this.hapticsEnabled,
-    required this.hardModeEnabled,
-    required this.soundEnabled,
+    this.hapticsEnabled = false,
+    this.hardModeEnabled = false,
+    this.soundEnabled = false,
     this.defaultDifficulty = 'Medium',
   });
 

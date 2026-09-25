@@ -281,13 +281,14 @@ class _VertexScreenState extends ConsumerState<VertexScreen>
           // Canvas & Interactive Graph
           Expanded(
             child: Container(
-              margin: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
+                color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
+                border: Border.all(color: Colors.black, width: 2.5),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                ],
               ),
               child: FittedBox(
                 child: SizedBox(
@@ -314,18 +315,12 @@ class _VertexScreenState extends ConsumerState<VertexScreen>
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(
-                                        context,
-                                      ).colorScheme.surfaceContainerHighest,
+                                    : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
                                 shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                  width: 2,
-                                ),
+                                border: Border.all(color: Colors.black, width: 2.2),
+                                boxShadow: const [
+                                  BoxShadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
+                                ],
                               ),
                               child: Center(
                                 child: Text(

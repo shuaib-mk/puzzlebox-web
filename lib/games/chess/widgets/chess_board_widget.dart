@@ -75,11 +75,12 @@ class ChessBoardWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
+          border: Border.all(color: Colors.black, width: 2.5),
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
+              color: Colors.black,
+              offset: Offset(4, 4),
+              blurRadius: 0,
             ),
           ],
         ),

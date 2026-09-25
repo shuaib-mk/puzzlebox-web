@@ -333,43 +333,34 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                     child: AspectRatio(
                       aspectRatio: 1.0,
                       child: Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: AnimatedContainer(
-                          duration: MediaQuery.disableAnimationsOf(context)
-                              ? Duration.zero
-                              : const Duration(milliseconds: 160),
-                          curve: Curves.easeOutCubic,
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outlineVariant,
-                              width: 2,
-                            ),
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.black, width: 2.5),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                            ],
                           ),
+                          clipBehavior: Clip.antiAlias,
                           child: GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 9,
-                                ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 9,
+                            ),
                             itemCount: 81,
                             itemBuilder: (context, index) {
                               final r = index ~/ 9;
                               final c = index % 9;
                               final isInitial = _initialGrid[r][c] != 0;
                               final val = _userGrid[r][c];
-                              final isSelected =
-                                  r == _selectedRow && c == _selectedCol;
+                              final isSelected = r == _selectedRow && c == _selectedCol;
                               final isConflict = _hasConflict(r, c);
                               final notes = _pencilGrid[r][c];
 
-                              final borderRight = (c + 1) % 3 == 0 && c != 8
-                                  ? 2.0
-                                  : 0.5;
-                              final borderBottom = (r + 1) % 3 == 0 && r != 8
-                                  ? 2.0
-                                  : 0.5;
+                              final borderRight = (c + 1) % 3 == 0 && c != 8 ? 2.5 : 0.8;
+                              final borderBottom = (r + 1) % 3 == 0 && r != 8 ? 2.5 : 0.8;
 
                               return GestureDetector(
                                 key: ValueKey('sudoku_${r}_$c'),
@@ -377,48 +368,18 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                                   _selectedRow = r;
                                   _selectedCol = c;
                                 }),
-                                child: AnimatedContainer(
-                                  duration:
-                                      MediaQuery.disableAnimationsOf(context)
-                                      ? Duration.zero
-                                      : const Duration(milliseconds: 160),
-                                  curve: Curves.easeOutCubic,
+                                child: Container(
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? Theme.of(context).colorScheme.primary
-                                              .withValues(alpha: 0.3)
                                         : isConflict
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.errorContainer
-                                        : Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainerLow,
+                                            ? Theme.of(context).colorScheme.errorContainer
+                                            : Colors.transparent,
                                     border: Border(
-                                      right: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                        width: borderRight,
-                                      ),
-                                      bottom: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                        width: borderBottom,
-                                      ),
-                                      left: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                        width: 0.5,
-                                      ),
-                                      top: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outlineVariant,
-                                        width: 0.5,
-                                      ),
+                                      right: BorderSide(color: Colors.black, width: borderRight),
+                                      bottom: BorderSide(color: Colors.black, width: borderBottom),
+                                      left: const BorderSide(color: Colors.black, width: 0.4),
+                                      top: const BorderSide(color: Colors.black, width: 0.4),
                                     ),
                                   ),
                                   child: Center(
@@ -427,35 +388,30 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                                             '$val',
                                             style: TextStyle(
                                               fontSize: 20,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w900,
                                               color: isInitial
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).colorScheme.onSurface
+                                                  ? (isSelected ? Colors.black : Theme.of(context).colorScheme.onSurface)
                                                   : isConflict
-                                                  ? AppColors.error
-                                                  : Theme.of(
-                                                      context,
-                                                    ).colorScheme.primary,
+                                                      ? AppColors.error
+                                                      : (isSelected ? Colors.black : Theme.of(context).colorScheme.primary),
                                             ),
                                           )
                                         : notes.isNotEmpty
-                                        ? Wrap(
-                                            children: notes
-                                                .map(
-                                                  (n) => Text(
-                                                    '$n ',
-                                                    style: TextStyle(
-                                                      fontSize: 8,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .onSurfaceVariant,
-                                                    ),
-                                                  ),
-                                                )
-                                                .toList(),
-                                          )
-                                        : null,
+                                            ? Wrap(
+                                                children: notes
+                                                    .map(
+                                                      (n) => Text(
+                                                        '$n ',
+                                                        style: const TextStyle(
+                                                          fontSize: 8,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                              )
+                                            : null,
                                   ),
                                 ),
                               );
@@ -467,69 +423,122 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                   ),
                 ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit_note,
-                        color: _pencilMode
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      onPressed: () =>
-                          setState(() => _pencilMode = !_pencilMode),
-                      tooltip: 'Pencil Mode',
-                    ),
-                    IconButton(
-                      onPressed: _undo,
-                      icon: Icon(Icons.undo),
-                      tooltip: 'Undo',
-                    ),
-                    OutlinedButton(onPressed: _erase, child: Text('Erase')),
-                    if (shouldShowNextButton(_isSolved))
-                      ElevatedButton.icon(
-                        icon: Icon(Icons.arrow_forward_rounded),
-                        label: Text('Next Sudoku'),
-                        onPressed: nextPuzzle,
-                      ),
-                  ],
-                ),
-                SizedBox(height: 12),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    9,
-                    (i) => Expanded(
-                      child: InkWell(
-                        key: ValueKey('sudoku_number_${i + 1}'),
-                        onTap: () => _onNumberTap(i + 1),
-                        child: AnimatedContainer(
-                          duration: MediaQuery.disableAnimationsOf(context)
-                              ? Duration.zero
-                              : const Duration(milliseconds: 160),
-                          curve: Curves.easeOutCubic,
-                          width: 36,
-                          height: 44,
+                // Control Action Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => setState(() => _pencilMode = !_pencilMode),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outlineVariant,
+                            color: _pencilMode
+                                ? Theme.of(context).colorScheme.primary
+                                : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black, width: 2.0),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.edit_note, size: 20, color: Colors.black),
+                              SizedBox(width: 4),
+                              Text('Pencil', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _undo,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black, width: 2.0),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.undo, size: 18, color: Colors.black),
+                              SizedBox(width: 4),
+                              Text('Undo', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _erase,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black, width: 2.0),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: const Text('Erase', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                        ),
+                      ),
+                      if (shouldShowNextButton(_isSolved))
+                        GestureDetector(
+                          onTap: nextPuzzle,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black, width: 2.0),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: Row(
+                              children: const [
+                                Text('Next', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                                SizedBox(width: 4),
+                                Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.black),
+                              ],
                             ),
                           ),
-                          child: Center(
-                            child: Text(
-                              '${i + 1}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Number keypad
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      9,
+                      (i) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                          child: InkWell(
+                            key: ValueKey('sudoku_number_${i + 1}'),
+                            onTap: () => _onNumberTap(i + 1),
+                            child: Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black, width: 2.0),
+                                boxShadow: const [
+                                  BoxShadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${i + 1}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -538,7 +547,7 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
             ),
     );

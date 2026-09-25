@@ -99,46 +99,31 @@ class _TileWidgetState extends State<TileWidget>
   Color _bgColor(LetterState s, bool isDark) {
     switch (s) {
       case LetterState.correct:
-        return AppColors.correct;
+        return const Color(0xFF4ADE80); // Vibrant Neo Green
       case LetterState.present:
-        return isDark ? AppColors.present : AppColors.present;
+        return const Color(0xFFFACC15); // Vibrant Neo Yellow
       case LetterState.absent:
-        return isDark ? AppColors.absent : AppColors.absentLight;
+        return isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8); // Slate grey
       default:
-        return Colors.transparent;
+        return isDark ? const Color(0xFF1E293B) : Colors.white; // White in light mode, Dark Slate in dark mode
     }
   }
 
-  Color _borderColor(LetterState s, bool isDark) {
+  Color _textColor(LetterState s, bool isDark) {
     switch (s) {
       case LetterState.correct:
       case LetterState.present:
+        return Colors.black;
       case LetterState.absent:
-        return Colors.transparent;
-      case LetterState.filled:
-        return AppColors.filledTileBorder;
+        return Colors.white;
       default:
-        return isDark
-            ? AppColors.darkEmptyTileBorder
-            : AppColors.emptyTileBorder;
-    }
-  }
-
-  Color _textColor(LetterState s) {
-    switch (s) {
-      case LetterState.correct:
-      case LetterState.present:
-      case LetterState.absent:
-        return Theme.of(context).colorScheme.onSurface;
-      default:
-        return Colors.transparent;
+        return isDark ? Colors.white : Colors.black;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return AnimatedBuilder(
       animation: _flipAnim,
@@ -151,28 +136,27 @@ class _TileWidgetState extends State<TileWidget>
         );
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 80),
+        duration: const Duration(milliseconds: 80),
         width: widget.size,
         height: widget.size,
         decoration: BoxDecoration(
           color: _bgColor(_displayState, isDark),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: _borderColor(_displayState, isDark),
-            width: 2,
+            color: Colors.black,
+            width: 2.5,
           ),
+          boxShadow: const [
+            BoxShadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
+          ],
         ),
         child: Center(
           child: Text(
             _displayLetter,
             style: TextStyle(
               fontSize: widget.size * 0.48,
-              fontWeight: FontWeight.w800,
-              color:
-                  (_displayState == LetterState.correct ||
-                      _displayState == LetterState.present ||
-                      _displayState == LetterState.absent)
-                  ? _textColor(_displayState)
-                  : onSurface,
+              fontWeight: FontWeight.w900,
+              color: _textColor(_displayState, isDark),
               letterSpacing: 1,
             ),
           ),

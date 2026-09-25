@@ -3,6 +3,8 @@ import '../services/game_rules.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
+import '../services/app_feedback_service.dart';
+import '../theme/app_theme.dart';
 
 /// Common scaffold used by all game screens and the home screen.
 class AppScaffold extends ConsumerWidget {
@@ -25,39 +27,88 @@ class AppScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dividerColor = isDark
-        ? Theme.of(context).colorScheme.surfaceContainerHighest
-        : Theme.of(context).colorScheme.surfaceContainerHighest;
+    final colors = Theme.of(context).colorScheme;
+    final parts = title.split(' — ');
+    final mainTitle = parts.first;
+    final modeTag = parts.length > 1 ? parts[1] : null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title.split(' — ').first),
+        scrolledUnderElevation: 0,
+        backgroundColor: colors.surface,
+        elevation: 0,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                mainTitle,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+              ),
+            ),
+            if (modeTag != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: colors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.black, width: 1.5),
+                ),
+                child: Text(
+                  modeTag,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
         automaticallyImplyLeading: showBackButton,
         actions: [
           ...?actions,
           if (showSettingsAction)
-            IconButton(
-              icon: Icon(Icons.palette_outlined),
-              tooltip: 'Appearance & settings',
-              onPressed: () => showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => SingleChildScrollView(
-                  child: SettingsSheet(helpText: rulesFor(title)),
+            Padding(
+              padding: const EdgeInsets.only(right: 8, left: 2),
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: colors.primary,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black, width: 2.0),
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(Icons.palette_outlined, size: 20, color: Colors.black),
+                  tooltip: 'Appearance & settings',
+                  onPressed: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => SingleChildScrollView(
+                      child: SettingsSheet(helpText: rulesFor(title)),
+                    ),
+                  ),
                 ),
               ),
             ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, thickness: 1, color: dividerColor),
+          preferredSize: const Size.fromHeight(2.5),
+          child: Container(
+            height: 2.5,
+            color: Colors.black,
+          ),
         ),
       ),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 680),
+            constraints: const BoxConstraints(maxWidth: 680),
             child: body,
           ),
         ),
@@ -82,10 +133,22 @@ class AppBarIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(icon, size: 22),
-      onPressed: onTap,
-      tooltip: tooltip,
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      width: 38,
+      height: 38,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      decoration: BoxDecoration(
+        color: colors.primary,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black, width: 2.0),
+      ),
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(icon, size: 20, color: Colors.black),
+        onPressed: onTap,
+        tooltip: tooltip,
+      ),
     );
   }
 }
@@ -99,146 +162,153 @@ class SettingsSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final textTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(24, 12, 24, 32),
+    final paletteNames = [
+      'Sunflower Yellow',
+      'Lime Green',
+      'Rose Pink',
+      'Electric Cyan',
+      'Neon Violet',
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: const Border(top: BorderSide(color: Colors.black, width: 3.0)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: 48,
+              height: 5,
               decoration: BoxDecoration(
-                color: Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(2),
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(3),
               ),
             ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Made by q04ti',
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 6),
-          const Text('Independent developer. Creator of Puzzlebox.'),
-          const SizedBox(height: 6),
-          const Text(
-            'Designed and developed by q04ti. Free puzzles, made for everyone who loves to play.',
           ),
           const SizedBox(height: 20),
-          if (helpText != null)
-            ExpansionTile(
-              title: const Text('How to play'),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text(helpText!, style: const TextStyle(height: 1.6)),
-                ),
-              ],
-            ),
-          Wrap(
-            children: [
-              TextButton.icon(
-                icon: const Icon(Icons.privacy_tip_outlined),
-                label: const Text('Privacy'),
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (c) => AlertDialog(
-                    title: const Text('Your data stays yours'),
-                    content: const SingleChildScrollView(
-                      child: Text(privacyNotice),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(c),
-                        child: const Text('Close'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => showLicensePage(
-                  context: context,
-                  applicationName: 'Puzzlebox',
-                  applicationVersion: '2.1.1',
-                  applicationLegalese:
-                      'Puzzlebox © 2026 q04ti. Third-party components retain their own licenses.',
-                ),
-                child: const Text('Open-source licenses'),
-              ),
-            ],
+          const Text(
+            'Neo Customization',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -.5),
           ),
+          const SizedBox(height: 4),
           Text(
-            'Make it yours',
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            'Select your favorite accent color & appearance mode',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.onSurfaceVariant),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 18),
+          const Text(
+            'ACCENT COLOR PALETTE',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1, color: Colors.black),
+          ),
+          const SizedBox(height: 10),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (var i = 0; i < 4; i++)
+              for (var i = 0; i < paletteNames.length; i++)
                 ChoiceChip(
-                  label: Text(['Ocean', 'Orchard', 'Clay', 'Iris'][i]),
+                  avatar: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: AppTheme.neoPalettes[i],
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 1.5),
+                    ),
+                  ),
+                  label: Text(paletteNames[i]),
                   selected: settings.palette == i,
                   onSelected: (_) =>
                       ref.read(settingsProvider.notifier).setPalette(i),
                 ),
             ],
           ),
-          SizedBox(height: 16),
-          _SettingRow(
-            label: 'Dark Mode',
-            subtitle: 'Switch app appearance',
-            child: Switch(
-              value: settings.themeMode == ThemeMode.dark,
-              activeThumbColor: Theme.of(context).colorScheme.primary,
-              onChanged: (v) {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setThemeMode(v ? ThemeMode.dark : ThemeMode.light);
-              },
+          const SizedBox(height: 20),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.black, width: 2.5),
+              boxShadow: const [
+                BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+              ],
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                _SettingRow(
+                  label: 'Dark Mode',
+                  subtitle: 'Switch app appearance theme',
+                  child: Switch(
+                    value: settings.themeMode == ThemeMode.dark,
+                    activeThumbColor: colors.primary,
+                    onChanged: (v) {
+                      ref
+                          .read(settingsProvider.notifier)
+                          .setThemeMode(v ? ThemeMode.dark : ThemeMode.light);
+                    },
+                  ),
+                ),
+                const Divider(color: Colors.black, thickness: 2),
+                _SettingRow(
+                  label: 'Haptic Feedback',
+                  subtitle: 'Tactile vibrations on key taps & game wins',
+                  child: Switch(
+                    value: settings.hapticsEnabled,
+                    activeThumbColor: colors.primary,
+                    onChanged: (v) {
+                      ref.read(settingsProvider.notifier).setHapticsEnabled(v);
+                      if (v) AppFeedbackService.testHaptic();
+                    },
+                  ),
+                ),
+                const Divider(color: Colors.black, thickness: 2),
+                _SettingRow(
+                  label: 'Sound Effects',
+                  subtitle: 'Play acoustic audio feedback during games',
+                  child: Switch(
+                    value: settings.soundEnabled,
+                    activeThumbColor: colors.primary,
+                    onChanged: (v) {
+                      ref.read(settingsProvider.notifier).setSoundEnabled(v);
+                      if (v) AppFeedbackService.testSound();
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          Divider(),
-          _SettingRow(
-            label: 'Haptic Feedback',
-            subtitle: 'Vibrations on key taps',
-            child: Switch(
-              value: settings.hapticsEnabled,
-              activeThumbColor: Theme.of(context).colorScheme.primary,
-              onChanged: (v) {
-                ref.read(settingsProvider.notifier).setHapticsEnabled(v);
-              },
+          if (helpText != null) ...[
+            const SizedBox(height: 16),
+            ExpansionTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(color: Colors.black, width: 2.0),
+              ),
+              collapsedShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(color: Colors.black, width: 2.0),
+              ),
+              backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+              collapsedBackgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+              title: const Text('How to Play', style: TextStyle(fontWeight: FontWeight.w900)),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(helpText!, style: const TextStyle(height: 1.5, fontWeight: FontWeight.w600)),
+                ),
+              ],
             ),
-          ),
-          Divider(),
-          _SettingRow(
-            label: 'Daily Five hard mode',
-            subtitle: 'Must use revealed hints in subsequent guesses',
-            child: Switch(
-              value: settings.hardModeEnabled,
-              activeThumbColor: Theme.of(context).colorScheme.primary,
-              onChanged: (v) {
-                ref.read(settingsProvider.notifier).setHardModeEnabled(v);
-              },
-            ),
-          ),
-          Divider(),
-          _SettingRow(
-            label: 'Sound Effects',
-            subtitle: 'Play subtle audio feedback on taps',
-            child: Switch(
-              value: settings.soundEnabled,
-              activeThumbColor: Theme.of(context).colorScheme.primary,
-              onChanged: (v) {
-                ref.read(settingsProvider.notifier).setSoundEnabled(v);
-              },
-            ),
-          ),
+          ],
         ],
       ),
     );
@@ -266,13 +336,13 @@ class _SettingRow extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14.5),
               ),
               Text(
                 subtitle,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),

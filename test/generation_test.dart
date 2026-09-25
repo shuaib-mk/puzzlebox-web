@@ -5,6 +5,9 @@ import 'package:puzzlebox/games/sudoku/sudoku_generator.dart';
 import 'package:puzzlebox/games/crossword/crossword_generator.dart';
 import 'package:puzzlebox/games/letter_boxed/boxed_generator.dart';
 import 'package:puzzlebox/games/daily_five/logic/word_list.dart';
+import 'package:puzzlebox/games/nonogram/nonogram_generator.dart';
+import 'package:puzzlebox/games/binary/binary_generator.dart';
+import 'package:puzzlebox/games/cages/cages_generator.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -85,4 +88,52 @@ void main() {
       }
     },
   );
+  test('Nonogram: every board is logically solvable from its own clues', () {
+    final generator = NonogramGenerator();
+    for (final difficulty in PuzzleDifficulty.values) {
+      for (var seed = 0; seed < 30; seed++) {
+        final p = generator.generate(PuzzleRequest('nonogram', seed, difficulty));
+        expect(
+          generator.validate(p),
+          isTrue,
+          reason: 'nonogram $difficulty $seed',
+        );
+        expect(p.solution.length, p.size * p.size);
+        expect(generator.generate(PuzzleRequest('nonogram', seed, difficulty)).solution, p.solution);
+      }
+    }
+  });
+  test('Binary: unique, balanced, triple-free and repeat-free grids', () {
+    final generator = BinaryGenerator();
+    for (final difficulty in PuzzleDifficulty.values) {
+      for (var seed = 0; seed < 30; seed++) {
+        final p = generator.generate(PuzzleRequest('binary', seed, difficulty));
+        expect(
+          generator.validate(p),
+          isTrue,
+          reason: 'binary $difficulty $seed',
+        );
+        expect(p.givens.length, p.size * p.size);
+        expect(
+          generator.generate(PuzzleRequest('binary', seed, difficulty)).givens,
+          p.givens,
+        );
+      }
+    }
+  });
+  test('Cages: Latin-square solutions that satisfy every cage exactly', () {
+    final generator = CagesGenerator();
+    for (final difficulty in PuzzleDifficulty.values) {
+      for (var seed = 0; seed < 30; seed++) {
+        final p = generator.generate(PuzzleRequest('cages', seed, difficulty));
+        expect(
+          generator.validate(p),
+          isTrue,
+          reason: 'cages $difficulty $seed',
+        );
+        final covered = p.cages.expand((c) => c.cells).toSet();
+        expect(covered.length, p.size * p.size);
+      }
+    }
+  });
 }

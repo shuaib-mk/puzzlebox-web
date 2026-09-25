@@ -7,6 +7,8 @@ import '../../../core/widgets/game_mode_toggle.dart';
 import '../models/letter_state.dart';
 import '../providers/daily_five_provider.dart';
 
+import '../../../core/services/app_feedback_service.dart';
+
 const _rows = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -22,14 +24,9 @@ class KeyboardWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(dailyFiveProvider(mode));
-    final hapticsOn = ref.watch(
-      settingsProvider.select((s) => s.hapticsEnabled),
-    );
-    final soundOn = ref.watch(settingsProvider.select((s) => s.soundEnabled));
 
     void onKey(String key) {
-      if (hapticsOn) HapticFeedback.lightImpact();
-      if (soundOn) SystemSound.play(SystemSoundType.click);
+      AppFeedbackService.tap(ref);
       if (key == '⌫') {
         ref.read(dailyFiveProvider(mode).notifier).deleteLetter();
       } else if (key == 'ENTER') {
@@ -86,13 +83,11 @@ class _KeyButton extends StatelessWidget {
       case LetterState.correct:
         return AppColors.correct;
       case LetterState.present:
-        return isDark ? AppColors.present : AppColors.presentLight;
+        return AppColors.present;
       case LetterState.absent:
-        return isDark ? AppColors.absent : AppColors.absentLight;
+        return isDark ? Colors.grey.shade800 : Colors.grey.shade400;
       default:
-        return isDark
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : Theme.of(context).colorScheme.secondaryContainer;
+        return isDark ? const Color(0xFF1E293B) : Colors.white;
     }
   }
 
@@ -100,11 +95,9 @@ class _KeyButton extends StatelessWidget {
     if (state == LetterState.correct ||
         state == LetterState.present ||
         state == LetterState.absent) {
-      return Colors.white;
+      return Colors.black;
     }
-    return isDark
-        ? Theme.of(context).colorScheme.onSurface
-        : Theme.of(context).colorScheme.onSurface;
+    return Colors.black;
   }
 
   @override
@@ -115,20 +108,24 @@ class _KeyButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        margin: EdgeInsets.symmetric(horizontal: 3),
+        duration: const Duration(milliseconds: 150),
+        margin: const EdgeInsets.symmetric(horizontal: 2.5),
         width: w,
-        height: 56,
+        height: 54,
         decoration: BoxDecoration(
           color: _bg(context, isDark),
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.black, width: 1.5),
+          boxShadow: const [
+            BoxShadow(color: Colors.black, offset: Offset(1.5, 1.5), blurRadius: 0),
+          ],
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              fontSize: label == 'ENTER' ? 11 : 16,
-              fontWeight: FontWeight.w700,
+              fontSize: label == 'ENTER' ? 10.5 : 15,
+              fontWeight: FontWeight.w900,
               color: _fg(context, isDark),
             ),
           ),

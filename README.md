@@ -2,7 +2,7 @@
 
 Designed and developed by **q04ti**, an independent developer.
 
-Eleven offline puzzle games. Unlimited play, free hints, local progress, and four color themes. No ads, subscriptions, accounts, energy meters, or paid puzzle packs.
+Fifteen offline puzzle games. Unlimited play, free hints, local progress, and four color themes. No ads, subscriptions, accounts, energy meters, or paid puzzle packs.
 
 ## Download for Android
 
@@ -33,6 +33,10 @@ Version 2.1.0 improves gameplay persistence, undo, dictionary acceptance and vis
 - **Tiles:** generated matching pairs, combos, and pair-location hints.
 - **Letter Boxed:** real-word chains using all twelve letters, alternating-side rules, linked words, verified solutions, hints, and undo.
 - **Vertex:** generated degree-constraint graphs, removable edges, undo, and a known-solution hint route.
+- **Chess:** tactics puzzles, an on-device AI opponent, and local Pass & Play.
+- **Nonogram:** logically-solvable picture-logic grids, row/column run clues, and cell marking.
+- **Binary:** balanced 0/1 grids with no triples and no repeated rows or columns.
+- **Cages:** Latin-square grids where every outlined cage must satisfy its arithmetic target.
 
 Unlimited is the default. Completion saves the result and moves on after brief feedback. Next is always available. Daily challenges have separate statistics. Progress and settings stay on the device. Open the palette button for themes, settings, and game rules.
 
@@ -40,7 +44,7 @@ Unlimited is the default. Completion saves the result and moves on after brief f
 
 Unlimited means no level cap, not an infinite supply of never-repeated content. Logic games generate new arrangements. Word games recombine finite, bundled words, clues, and themes; content can eventually repeat. No external service or AI subscription is required.
 
-These are Puzzlebox's own implementations. Crossword uses compact crisscross layouts rather than newspaper-style symmetric, fully checked grids. Pips uses sum targets; Vertex uses degree constraints. Sudoku difficulty changes clue targets (44 / 35 / 28 where uniqueness permits), not a calibrated human-technique rating.
+These are Puzzlebox's own implementations. Crossword uses compact crisscross layouts rather than newspaper-style symmetric, fully checked grids. Pips uses sum targets; Vertex uses degree constraints. Sudoku difficulty changes clue targets (44 / 35 / 28 where uniqueness permits), not a calibrated human-technique rating. Nonogram boards are only accepted once a pure logical solver (no guessing) can fill them completely, which proves a single solution. Binary and Cages boards are kept only while a full solution search confirms exactly one answer remains.
 
 ## Development
 

@@ -3,6 +3,7 @@ import 'home_screen.dart';
 import 'settings_screen.dart';
 import 'about_screen.dart';
 import 'unified_stats_screen.dart';
+import 'loading_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -11,6 +12,7 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
+  bool _isLoading = true;
   int index = 0;
   final pages = const [
     HomeScreen(),
@@ -18,34 +20,69 @@ class _AppShellState extends State<AppShell> {
     SettingsScreen(),
     AboutScreen(),
   ];
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: IndexedStack(index: index, children: pages),
-    bottomNavigationBar: NavigationBar(
-      selectedIndex: index,
-      onDestinationSelected: (value) => setState(() => index = value),
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.extension_outlined),
-          selectedIcon: Icon(Icons.extension_rounded),
-          label: 'Play',
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (_isLoading) {
+      return LoadingScreen(
+        onFinished: () {
+          if (mounted) {
+            setState(() => _isLoading = false);
+          }
+        },
+      );
+    }
+
+    return Scaffold(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        child: KeyedSubtree(
+          key: ValueKey<int>(index),
+          child: pages[index],
         ),
-        NavigationDestination(
-          icon: Icon(Icons.insights_outlined),
-          selectedIcon: Icon(Icons.insights_rounded),
-          label: 'Progress',
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          border: const Border(
+            top: BorderSide(
+              color: Colors.black,
+              width: 2.5,
+            ),
+          ),
         ),
-        NavigationDestination(
-          icon: Icon(Icons.tune_outlined),
-          selectedIcon: Icon(Icons.tune_rounded),
-          label: 'Settings',
+        child: NavigationBar(
+          selectedIndex: index,
+          onDestinationSelected: (value) => setState(() => index = value),
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.grid_view_outlined, color: isDark ? Colors.white : Colors.black),
+              selectedIcon: Icon(Icons.grid_view_rounded, color: isDark ? Colors.white : Colors.black),
+              label: 'Play',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.bar_chart_outlined, color: isDark ? Colors.white : Colors.black),
+              selectedIcon: Icon(Icons.bar_chart_rounded, color: isDark ? Colors.white : Colors.black),
+              label: 'Progress',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.tune_outlined, color: isDark ? Colors.white : Colors.black),
+              selectedIcon: Icon(Icons.tune_rounded, color: isDark ? Colors.white : Colors.black),
+              label: 'Settings',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.info_outline_rounded, color: isDark ? Colors.white : Colors.black),
+              selectedIcon: Icon(Icons.info_rounded, color: isDark ? Colors.white : Colors.black),
+              label: 'About',
+            ),
+          ],
         ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person_rounded),
-          label: 'About',
-        ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

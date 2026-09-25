@@ -7,6 +7,7 @@ import '../../core/services/stats_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
+import '../../core/widgets/neo_toast.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
 
 class SpellingBeeScreen extends ConsumerStatefulWidget {
@@ -179,8 +180,12 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
   }
 
   void _showToast(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: Duration(milliseconds: 1500)),
+    NeoToast.show(
+      context,
+      message,
+      icon: Icons.hive_rounded,
+      color: const Color(0xFFC084FC),
+      duration: const Duration(milliseconds: 2000),
     );
   }
 
@@ -240,45 +245,57 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
               child: Column(
                 children: [
                   // Score & Rank Bar
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 4,
-                    alignment: WrapAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Rank: $_rank',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.primary,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.black, width: 2.5),
+                      boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0)],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Rank: $_rank',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Score: $_score',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.onSurface,
+                        Text(
+                          'Score: $_score',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   // Current Input Display
                   Container(
-                    height: 50,
+                    height: 52,
                     alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: Colors.black, width: 2.2),
+                    ),
                     child: Text(
                       _currentInput,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
                         letterSpacing: 4,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Colors.black,
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // Honeycomb 7-Letter View
                   Expanded(
                     child: Center(
@@ -292,14 +309,14 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
                                 letter: _outerLetters[0],
                                 onTap: () => _addLetter(_outerLetters[0]),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               _BeeTile(
                                 letter: _outerLetters[1],
                                 onTap: () => _addLetter(_outerLetters[1]),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -307,20 +324,20 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
                                 letter: _outerLetters[2],
                                 onTap: () => _addLetter(_outerLetters[2]),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               _BeeTile(
                                 letter: _centerLetter,
                                 isCenter: true,
                                 onTap: () => _addLetter(_centerLetter),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               _BeeTile(
                                 letter: _outerLetters[3],
                                 onTap: () => _addLetter(_outerLetters[3]),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -328,7 +345,7 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
                                 letter: _outerLetters[4],
                                 onTap: () => _addLetter(_outerLetters[4]),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               _BeeTile(
                                 letter: _outerLetters[5],
                                 onTap: () => _addLetter(_outerLetters[5]),
@@ -343,24 +360,54 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      OutlinedButton(onPressed: _delete, child: Text('Delete')),
-                      IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: _shuffle,
-                        tooltip: 'Shuffle',
+                      GestureDetector(
+                        onTap: _delete,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.black, width: 2.2),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: const Text('Delete', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                        ),
                       ),
-                      ElevatedButton(
-                        onPressed: _isGameComplete ? null : _submit,
-                        child: Text('Enter'),
+                      GestureDetector(
+                        onTap: _shuffle,
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.black, width: 2.2),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: const Icon(Icons.refresh, color: Colors.black),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _isGameComplete ? null : _submit,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.black, width: 2.2),
+                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                          ),
+                          child: const Text('Enter', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // Found Words Sheet Toggle
                   ExpansionTile(
                     title: Text(
                       'Found ${_foundWords.length} / $_targetWords words',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     children: [
                       Wrap(
@@ -369,10 +416,7 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
                         children: _foundWords
                             .map(
                               (w) => Chip(
-                                label: Text(w, style: TextStyle(fontSize: 12)),
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
+                                label: Text(w, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
                               ),
                             )
                             .toList(),
@@ -402,32 +446,29 @@ class _BeeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 64,
         height: 64,
         decoration: BoxDecoration(
-          color: isCenter
-              ? AppColors.difficultyEasy
-              : Theme.of(context).colorScheme.surfaceContainerLow,
+          color: isCenter ? colors.primary : (isDark ? const Color(0xFF1E293B) : Colors.white),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isCenter
-                ? AppColors.difficultyEasy
-                : Theme.of(context).colorScheme.outlineVariant,
-            width: 2,
-          ),
+          border: Border.all(color: Colors.black, width: 2.5),
+          boxShadow: const [
+            BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+          ],
         ),
         child: Center(
           child: Text(
             letter,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: isCenter
-                  ? Colors.black
-                  : Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w900,
+              color: Colors.black,
             ),
           ),
         ),

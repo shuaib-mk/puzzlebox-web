@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/stats_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
+import '../../core/widgets/neo_toast.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
 
 class LetterBoxedSquareItem {
@@ -131,11 +132,12 @@ class _LetterBoxedScreenState extends ConsumerState<LetterBoxedScreen>
   void _onLetterTap(String letter, int side) {
     if (_isSolved || _currentWord.length >= 24) return;
     if (_lastSide == side) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Cannot pick consecutive letters from the same side!'),
-          duration: Duration(milliseconds: 1000),
-        ),
+      NeoToast.show(
+        context,
+        'Cannot pick consecutive letters from the same side!',
+        icon: Icons.block_rounded,
+        color: const Color(0xFFF43F5E),
+        duration: const Duration(milliseconds: 1500),
       );
       return;
     }
@@ -303,16 +305,12 @@ class _LetterBoxedScreenState extends ConsumerState<LetterBoxedScreen>
                                   curve: Curves.easeOutCubic,
                                   padding: EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerLow,
+                                    color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outlineVariant,
-                                      width: 2,
-                                    ),
+                                    border: Border.all(color: Colors.black, width: 2.5),
+                                    boxShadow: const [
+                                      BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                                    ],
                                   ),
                                   child: Column(
                                     mainAxisAlignment:
@@ -505,17 +503,20 @@ class _SideLetter extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: Theme.of(context).colorScheme.primary,
           shape: BoxShape.circle,
-          border: Border.all(color: Theme.of(context).colorScheme.primary),
+          border: Border.all(color: Colors.black, width: 2.2),
+          boxShadow: const [
+            BoxShadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
+          ],
         ),
         child: Center(
           child: Text(
             letter,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w900,
+              color: Colors.black,
             ),
           ),
         ),

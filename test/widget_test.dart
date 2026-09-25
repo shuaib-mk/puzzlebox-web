@@ -18,6 +18,9 @@ import 'package:puzzlebox/games/tiles/tiles_screen.dart';
 import 'package:puzzlebox/games/letter_boxed/letter_boxed_screen.dart';
 import 'package:puzzlebox/games/vertex/vertex_screen.dart';
 import 'package:puzzlebox/games/chess/chess_screen.dart';
+import 'package:puzzlebox/games/nonogram/nonogram_screen.dart';
+import 'package:puzzlebox/games/binary/binary_screen.dart';
+import 'package:puzzlebox/games/cages/cages_screen.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +37,7 @@ void main() {
       ),
     );
     expect(find.text('puzzlebox'), findsOneWidget);
-    expect(find.text('12 games. Always free. Play offline.'), findsOneWidget);
+    expect(find.text('15 games · Always free · Offline'), findsOneWidget);
   });
   final screens = <String, Widget>{
     'daily_five': const DailyFiveScreen(),
@@ -49,6 +52,9 @@ void main() {
     'letter_boxed': const LetterBoxedScreen(),
     'vertex': const VertexScreen(),
     'chess': const ChessScreen(),
+    'nonogram': const NonogramScreen(),
+    'binary': const BinaryScreen(),
+    'cages': const CagesScreen(),
   };
   for (final size in [const Size(390, 844), const Size(320, 700)]) {
     for (final entry in screens.entries) {
