@@ -1,51 +1,60 @@
-# Puzzlebox
+# Puzzlebox 🧩
 
-Designed and developed by **q04ti**, an independent developer.
+A collection of **15 hand-crafted word and logic puzzle games** for Android, built with love by independent developer **[q04ti](https://q04ti.dev)**.
 
-Fifteen offline puzzle games. Unlimited play, free hints, local progress, and four color themes. No ads, subscriptions, accounts, energy meters, or paid puzzle packs.
+Everything is **100% free, offline, and ad-free**. No accounts, no subscriptions, no energy meters, and no microtransactions.
 
-## Download for Android
+---
 
-**[Download the latest Puzzlebox APK](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox.apk)**
+## 📲 Download for Android
 
-[All releases and checksums](https://github.com/Sinxn-coder/puzzlebox/releases)
+* **[Download Latest APK (Universal)](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox.apk)** — Works on all Android devices
+* **[Download ARM64 Lite APK](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox-arm64.apk)** — Optimized for modern 64-bit phones
+* **[View All Releases](https://github.com/Sinxn-coder/puzzlebox/releases)**
 
-Open the APK on Android and allow installation from your browser or file manager when Android asks. The release is signed with a dedicated Puzzlebox key. An older prototype signed with a debug key cannot be updated in place with this release; Android treats the signatures as different. Do not delete an old installation without first considering its locally stored progress.
+---
 
-<p>
-  <img src="docs/screenshots/home-ocean.png" width="260" alt="Puzzlebox in the Ocean theme">
-  <img src="docs/screenshots/home-iris-dark.png" width="260" alt="Puzzlebox in the Iris dark theme">
+## 📸 Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/home-dark.jpg" width="280" alt="Puzzlebox Dark Mode" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/screenshots/home-light.jpg" width="280" alt="Puzzlebox Light Mode" />
 </p>
 
-## Release status
+---
 
-Version 2.1.0 improves gameplay persistence, undo, dictionary acceptance and visual design. See [release readiness](docs/RELEASE_READINESS.md) for verified coverage and the remaining Google Play steps. A successful build is not a zero-bug or Play Store approval guarantee.
+## 🎮 Included Games
 
-## Play
+1. **Chess** — Tactics puzzles, on-device AI opponent, and Pass & Play.
+2. **Sudoku** — Classic 9x9 logic placement with notes and error feedback.
+3. **Daily Five** — 5-letter word guessing challenge with position clues.
+4. **Connections** — Group 16 words into 4 themed categories.
+5. **Spelling Bee** — Find as many words as possible using the 7 letters.
+6. **Mini Crossword** — Quick, fun daily grid crosswords.
+7. **Strands** — Find themed word paths that fill the grid.
+8. **Pips** — Solvable domino sum-matching puzzle.
+9. **Tiles** — Pattern & color matching pair finder.
+10. **Letter Boxed** — Connect side letters to form word chains.
+11. **Vertex** — Connect dots to satisfy degree rules.
+12. **Nonogram** — Picture logic grid puzzles.
+13. **Binary** — Fill grids with 0s and 1s adhering to binary rules.
+14. **Cages** — Latin square math puzzle grids.
+15. **Word Search** — Classic word finder grid.
 
-- **Daily Five:** six guesses, duplicate-letter feedback, real word validation, position hints, and optional hard-mode clue enforcement.
-- **Sudoku:** fresh uniquely solvable boards, difficulty presets, pencil notes, undo, conflict feedback, and timer.
-- **Connections:** four disjoint groups sampled from an original category bank, one-away feedback, category hints, and mistake limits.
-- **Spelling Bee:** seven-letter sets with a guaranteed pangram, center-letter and dictionary validation, scoring, shuffle, and difficulty-dependent goals.
-- **The Mini / Crossword:** generated crossing-word layouts, consistent clues, direction switching, check, reveal-letter hints, undo, and timer.
-- **Strands:** themed paths covering all 48 cells, a spanning theme word, winding paths, adjacency enforcement, hints, and undo.
-- **Pips:** solvable domino sum-matching, reusable placement controls, undo, and target hints.
-- **Tiles:** generated matching pairs, combos, and pair-location hints.
-- **Letter Boxed:** real-word chains using all twelve letters, alternating-side rules, linked words, verified solutions, hints, and undo.
-- **Vertex:** generated degree-constraint graphs, removable edges, undo, and a known-solution hint route.
-- **Chess:** tactics puzzles, an on-device AI opponent, and local Pass & Play.
-- **Nonogram:** logically-solvable picture-logic grids, row/column run clues, and cell marking.
-- **Binary:** balanced 0/1 grids with no triples and no repeated rows or columns.
-- **Cages:** Latin-square grids where every outlined cage must satisfy its arithmetic target.
+---
 
-Unlimited is the default. Completion saves the result and moves on after brief feedback. Next is always available. Daily challenges have separate statistics. Progress and settings stay on the device. Open the palette button for themes, settings, and game rules.
+## 💡 Have an Idea or Game Suggestion?
 
-## About generation
+Want to see a new puzzle game added to Puzzlebox, or have feedback to make the app even better?
 
-Unlimited means no level cap, not an infinite supply of never-repeated content. Logic games generate new arrangements. Word games recombine finite, bundled words, clues, and themes; content can eventually repeat. No external service or AI subscription is required.
+👉 **[Submit a Suggestion on puzzlebox.q04ti.dev](https://puzzlebox.q04ti.dev)**
 
-These are Puzzlebox's own implementations. Crossword uses compact crisscross layouts rather than newspaper-style symmetric, fully checked grids. Pips uses sum targets; Vertex uses degree constraints. Sudoku difficulty changes clue targets (44 / 35 / 28 where uniqueness permits), not a calibrated human-technique rating. Nonogram boards are only accepted once a pure logical solver (no guessing) can fill them completely, which proves a single solution. Binary and Cages boards are kept only while a full solution search confirms exactly one answer remains.
+---
 
-## Development
+## 🔒 Privacy & Open Source
 
-Validated with Flutter 3.44.8 / Dart 3.12.2. The app uses Riverpod 2 and SharedPreferences. This checkout did not contain Hive or a Supabase backend. The app therefore runs entirely locally; no server credentials are required.
+Puzzlebox respects your privacy:
+* All game progress and stats stay stored locally on your device.
+* No tracking, analytics, or background data collection.
+* Read the full [Privacy Policy](https://puzzlebox.q04ti.dev/#privacy-policy).
