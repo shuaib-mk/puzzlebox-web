@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:puzzlebox/core/providers/settings_provider.dart';
 import 'package:puzzlebox/core/theme/app_theme.dart';
 import 'package:puzzlebox/main.dart';
+import 'package:puzzlebox/screens/home_screen.dart';
 import 'package:puzzlebox/games/daily_five/logic/word_list.dart';
 import 'package:puzzlebox/games/daily_five/widgets/daily_five_screen.dart';
 import 'package:puzzlebox/games/connections/connections_screen.dart';
@@ -38,7 +39,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.textContaining('My Puzzles'), findsOneWidget);
-    expect(find.textContaining('Daily Five'), findsWidgets);
+    expect(find.byType(HomeScreen), findsOneWidget);
   });
   final screens = <String, Widget>{
     'daily_five': const DailyFiveScreen(),

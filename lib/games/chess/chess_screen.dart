@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chess/chess.dart' as chess_lib;
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/neo_toast.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/services/practice_service.dart';
 import '../../core/services/stats_service.dart';
 import '../../core/widgets/pressable_scale.dart';
@@ -147,6 +148,7 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
 
   void _onSquareTap(String square) {
     if (_puzzleCompleted || _game.in_checkmate || _game.in_stalemate) return;
+    AppFeedbackService.tap(ref);
 
     if (_mode == ChessGameMode.vsAI) {
       final isPlayerTurn = (_isFlipped && _game.turn == chess_lib.Color.BLACK) ||

@@ -42,13 +42,14 @@ class StatsService {
     required String todayKey,
     required bool won,
     int? guessCount,
+    bool isPractice = false,
   }) async {
     final lastPlayed = getLastPlayedDate(gameType);
 
     GameStats current = loadStats(gameType);
 
-    // Prevent double-counting same day
-    if (lastPlayed == todayKey) return current;
+    // Prevent double-counting same day in daily mode
+    if (!isPractice && lastPlayed == todayKey) return current;
 
     int newStreak = current.currentStreak;
     if (won) {
@@ -60,7 +61,7 @@ class StatsService {
           today != null &&
           previous != null &&
           today.difference(previous).inDays == 1;
-      newStreak = consecutive ? current.currentStreak + 1 : 1;
+      newStreak = (consecutive || isPractice) ? current.currentStreak + 1 : 1;
     } else {
       newStreak = 0;
     }

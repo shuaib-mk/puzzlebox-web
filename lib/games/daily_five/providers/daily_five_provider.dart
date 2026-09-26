@@ -177,14 +177,15 @@ class DailyFiveNotifier extends FamilyNotifier<DailyFiveState, GameMode> {
       isAnimating: true,
     );
 
-    if (newPhase != GamePhase.playing && arg != GameMode.practice) {
+    if (newPhase != GamePhase.playing) {
       await _recordStats(won: won, guessCount: won ? nextRow : null);
-    } else if (won && arg == GameMode.practice) {
-      final practiceService = ref.read(practiceServiceProvider);
-      await practiceService.recordSolved(
-        _gameType,
-        '${ref.read(puzzleProgressionProvider).index(_gameType)}:${state.answer}',
-      );
+      if (won && arg == GameMode.practice) {
+        final practiceService = ref.read(practiceServiceProvider);
+        await practiceService.recordSolved(
+          _gameType,
+          '${ref.read(puzzleProgressionProvider).index(_gameType)}:${state.answer}',
+        );
+      }
     }
     if (won) {
       final difficulty =
@@ -195,6 +196,7 @@ class DailyFiveNotifier extends FamilyNotifier<DailyFiveState, GameMode> {
       await ref
           .read(engagementServiceProvider)
           .recordCompletion(game: _gameType, difficulty: difficulty);
+      ref.read(engagementRevisionProvider.notifier).state++;
     }
 
     await _saveState();
@@ -330,6 +332,7 @@ class DailyFiveNotifier extends FamilyNotifier<DailyFiveState, GameMode> {
       ),
       won: won,
       guessCount: guessCount,
+      isPractice: arg == GameMode.practice,
     );
     ref.invalidate(dailyFiveStatsProvider);
   }

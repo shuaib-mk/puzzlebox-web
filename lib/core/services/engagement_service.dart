@@ -14,18 +14,25 @@ class EngagementSnapshot {
   final int totalCompleted;
   final List<String> playDays;
   final List<Map<String, dynamic>> history;
+  final int storedPlaytimeSeconds;
+
   const EngagementSnapshot(
     this.currentStreak,
     this.bestStreak,
     this.totalCompleted,
     this.playDays,
-    this.history,
-  );
+    this.history, {
+    this.storedPlaytimeSeconds = 0,
+  });
 
-  int get totalSeconds =>
-      history.fold(0, (sum, item) => sum + (item['seconds'] as int? ?? 0));
+  int get totalSeconds {
+    final historySeconds = history.fold(0, (sum, item) => sum + (item['seconds'] as int? ?? 0));
+    return storedPlaytimeSeconds > historySeconds ? storedPlaytimeSeconds : historySeconds;
+  }
+
   int completedFor(String game) =>
       history.where((item) => item['game'] == game).length;
+
   int? bestSecondsFor(String game) {
     final times = history
         .where(
@@ -72,10 +79,22 @@ class EngagementService {
             (e) => Map<String, dynamic>.from(e as Map),
           ),
         ),
+        storedPlaytimeSeconds: data['playtime_seconds'] as int? ?? 0,
       );
     } catch (_) {
       return const EngagementSnapshot(0, 0, 0, [], []);
     }
+  }
+
+  Future<void> addPlayTime(int seconds) async {
+    if (seconds <= 0) return;
+    try {
+      final raw = prefs.getString(_key) ?? '{}';
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      final currentSeconds = data['playtime_seconds'] as int? ?? 0;
+      data['playtime_seconds'] = currentSeconds + seconds;
+      await prefs.setString(_key, jsonEncode(data));
+    } catch (_) {}
   }
 
   Future<EngagementSnapshot> recordCompletion({
@@ -99,6 +118,8 @@ class EngagementService {
     final newBest = current.bestStreak > _streakFor(days, today)
         ? current.bestStreak
         : _streakFor(days, today);
+    final newPlaytime = (current.storedPlaytimeSeconds) + seconds;
+
     await prefs.setString(
       _key,
       jsonEncode({
@@ -106,6 +127,7 @@ class EngagementService {
         'best': newBest,
         'total': current.totalCompleted + 1,
         'history': history.takeLast(200),
+        'playtime_seconds': newPlaytime,
       }),
     );
     return load(now: now);
@@ -129,3 +151,4 @@ extension<T> on List<T> {
   List<T> takeLast(int count) =>
       skip(length > count ? length - count : 0).toList();
 }
+

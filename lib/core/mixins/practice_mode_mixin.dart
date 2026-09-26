@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/game_mode_toggle.dart';
 import '../widgets/neo_toast.dart';
@@ -13,6 +12,7 @@ import '../services/puzzle_progression.dart';
 import '../services/date_service.dart';
 import '../providers/settings_provider.dart';
 import '../services/engagement_service.dart';
+import '../services/stats_service.dart';
 import '../widgets/celebration_burst.dart';
 
 mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
@@ -67,6 +67,16 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 
   void _saveSession() {
+    if (!mounted) return;
+    if (_sessionWatch.isRunning) {
+      final elapsed = _sessionWatch.elapsed.inSeconds;
+      if (elapsed > 0) {
+        ref.read(engagementServiceProvider).addPlayTime(elapsed);
+        _sessionWatch.reset();
+        _sessionWatch.start();
+        ref.read(engagementRevisionProvider.notifier).state++;
+      }
+    }
     if (_prefs == null || _sessionKey == null || _finishing) return;
     final data = captureProgress();
     if (data.isEmpty) return;
@@ -116,12 +126,7 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     _saveTimer?.cancel();
     if (_sessionKey != null) _prefs?.remove(_sessionKey!);
     final generation = _generation;
-    if (ref.read(settingsProvider).hapticsEnabled) {
-      HapticFeedback.mediumImpact();
-    }
-    if (ref.read(settingsProvider).soundEnabled) {
-      SystemSound.play(SystemSoundType.click);
-    }
+
     try {
       if (mode == GameMode.practice && won) {
         final count = await ref
@@ -138,6 +143,15 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
               difficulty: difficulty,
               seconds: _sessionWatch.elapsed.inSeconds,
             );
+        await ref
+            .read(statsServiceProvider)
+            .recordResult(
+              gameType: gameType,
+              todayKey: DateService.todayKey(),
+              won: true,
+              isPractice: mode == GameMode.practice,
+            );
+        ref.read(engagementRevisionProvider.notifier).state++;
         if (mounted) showCelebrationBurst(context);
       }
       if (!mounted || generation != _generation) return;

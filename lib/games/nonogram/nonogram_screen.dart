@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'nonogram_generator.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
@@ -75,6 +76,7 @@ class _NonogramScreenState extends ConsumerState<NonogramScreen>
 
   void _onCellTap(int index) {
     if (_isSolved || _puzzle == null) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       _grid[index] = (_grid[index] + 1) % 3;
@@ -84,6 +86,7 @@ class _NonogramScreenState extends ConsumerState<NonogramScreen>
 
   void _onCellLongPress(int index) {
     if (_isSolved || _puzzle == null) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       _grid[index] = _grid[index] == 2 ? 0 : 2;

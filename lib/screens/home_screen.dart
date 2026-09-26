@@ -54,6 +54,24 @@ class _HomeState extends ConsumerState<HomeScreen> {
 
   final _games = <_GameEntry>[
     (
+      'chess',
+      'Chess',
+      'Tactics & vs AI practice',
+      Icons.extension_rounded,
+      'Logic',
+      const Color(0xFFFB923C),
+      const ChessScreen(),
+    ),
+    (
+      'sudoku',
+      'Sudoku',
+      'Classic 9x9 logic placement',
+      Icons.apps_rounded,
+      'Logic',
+      const Color(0xFFFACC15),
+      const SudokuScreen(),
+    ),
+    (
       'daily_five',
       'Daily Five',
       '6 tries to guess 5-letter word',
@@ -70,15 +88,6 @@ class _HomeState extends ConsumerState<HomeScreen> {
       'Words',
       const Color(0xFFF43F5E),
       const ConnectionsScreen(),
-    ),
-    (
-      'sudoku',
-      'Sudoku',
-      'Classic 9x9 logic placement',
-      Icons.apps_rounded,
-      'Logic',
-      const Color(0xFFFACC15),
-      const SudokuScreen(),
     ),
     (
       'mini_crossword',
@@ -153,15 +162,6 @@ class _HomeState extends ConsumerState<HomeScreen> {
       const VertexScreen(),
     ),
     (
-      'chess',
-      'Chess',
-      'Tactics & vs AI practice',
-      Icons.extension_rounded,
-      'Logic',
-      const Color(0xFFFB923C),
-      const ChessScreen(),
-    ),
-    (
       'nonogram',
       'Nonogram',
       'Picross picture logic',
@@ -190,7 +190,7 @@ class _HomeState extends ConsumerState<HomeScreen> {
     ),
   ];
 
-  static const _newGames = {'nonogram', 'binary', 'cages'};
+  static const _newGames = <String>{};
 
   Future<void> _openGame(_GameEntry game) async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => game.$7));
