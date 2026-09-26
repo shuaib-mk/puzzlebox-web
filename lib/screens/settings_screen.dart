@@ -143,56 +143,59 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Default Difficulty',
-                    labelStyle: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: isDark ? Colors.white : Colors.black),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Default Difficulty',
+                      labelStyle: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: isDark ? Colors.white : Colors.black),
+                    ),
+                    initialValue: state.defaultDifficulty,
+                    items: ['Easy', 'Medium', 'Hard']
+                        .map((v) => DropdownMenuItem(value: v, child: Text(v, style: const TextStyle(fontWeight: FontWeight.w900))))
+                        .toList(),
+                    onChanged: (v) {
+                      if (v != null) notifier.setDefaultDifficulty(v);
+                    },
                   ),
-                  value: state.defaultDifficulty,
-                  items: ['Easy', 'Medium', 'Hard']
-                      .map((v) => DropdownMenuItem(value: v, child: Text(v, style: const TextStyle(fontWeight: FontWeight.w900))))
-                      .toList(),
-                  onChanged: (v) {
-                    if (v != null) notifier.setDefaultDifficulty(v);
-                  },
-                ),
-                const Divider(color: Colors.black, thickness: 2),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  activeColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
-                  title: const Text('Haptic Feedback', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Tactile vibrations on key taps & game wins'),
-                  value: state.hapticsEnabled,
-                  onChanged: (v) {
-                    notifier.setHapticsEnabled(v);
-                    if (v) AppFeedbackService.testHaptic();
-                  },
-                ),
-                const Divider(color: Colors.black, thickness: 2),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  activeColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
-                  title: const Text('Sound Effects', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Audio feedback during play'),
-                  value: state.soundEnabled,
-                  onChanged: (v) {
-                    notifier.setSoundEnabled(v);
-                    if (v) AppFeedbackService.testSound();
-                  },
-                ),
-                const Divider(color: Colors.black, thickness: 2),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  activeColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
-                  title: const Text('Daily Five Hard Mode', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Must use revealed hints in subsequent guesses'),
-                  value: state.hardModeEnabled,
-                  onChanged: notifier.setHardModeEnabled,
-                ),
-              ],
+                  const Divider(color: Colors.black, thickness: 2),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    activeThumbColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
+                    title: const Text('Haptic Feedback', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Tactile vibrations on key taps & game wins'),
+                    value: state.hapticsEnabled,
+                    onChanged: (v) {
+                      notifier.setHapticsEnabled(v);
+                      if (v) AppFeedbackService.testHaptic();
+                    },
+                  ),
+                  const Divider(color: Colors.black, thickness: 2),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    activeThumbColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
+                    title: const Text('Sound Effects', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Audio feedback during play'),
+                    value: state.soundEnabled,
+                    onChanged: (v) {
+                      notifier.setSoundEnabled(v);
+                      if (v) AppFeedbackService.testSound();
+                    },
+                  ),
+                  const Divider(color: Colors.black, thickness: 2),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    activeThumbColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
+                    title: const Text('Daily Five Hard Mode', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Must use revealed hints in subsequent guesses'),
+                    value: state.hardModeEnabled,
+                    onChanged: notifier.setHardModeEnabled,
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 28),
@@ -208,24 +211,27 @@ class SettingsScreen extends ConsumerWidget {
                 BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
               ],
             ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-              trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
-              onTap: () async {
-                final uri = Uri.parse('https://puzzlebox.q04ti.dev/#privacy-policy');
-                if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && context.mounted) {
-                  await Clipboard.setData(const ClipboardData(text: 'https://puzzlebox.q04ti.dev/#privacy-policy'));
-                  if (context.mounted) {
-                    NeoToast.show(
-                      context,
-                      'Link copied to clipboard',
-                      icon: Icons.link_rounded,
-                      color: const Color(0xFF38BDF8),
-                    );
+            child: Material(
+              color: Colors.transparent,
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
+                onTap: () async {
+                  final uri = Uri.parse('https://puzzlebox.q04ti.dev/#privacy-policy');
+                  if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && context.mounted) {
+                    await Clipboard.setData(const ClipboardData(text: 'https://puzzlebox.q04ti.dev/#privacy-policy'));
+                    if (context.mounted) {
+                      NeoToast.show(
+                        context,
+                        'Link copied to clipboard',
+                        icon: Icons.link_rounded,
+                        color: const Color(0xFF38BDF8),
+                      );
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
           ),
         ],

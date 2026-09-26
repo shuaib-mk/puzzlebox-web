@@ -33,14 +33,6 @@ typedef _GameEntry = (
   Widget screen,
 );
 
-const _tabColors = [
-  Color(0xFF4ADE80), // Lime
-  Color(0xFFF43F5E), // Rose Pink
-  Color(0xFFFACC15), // Sunflower Yellow
-  Color(0xFF38BDF8), // Cyan
-  Color(0xFFC084FC), // Violet
-  Color(0xFFFB923C), // Orange
-];
 
 const _categoryIcons = {
   'All': Icons.apps_rounded,
@@ -214,95 +206,7 @@ class _HomeState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _openPalettePicker() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        side: BorderSide(color: Colors.black, width: 2.5),
-      ),
-      builder: (context) {
-        final state = ref.watch(settingsProvider);
-        final notifier = ref.read(settingsProvider.notifier);
-        final isDark = Theme.of(context).brightness == Brightness.dark;
 
-        final options = const [
-          ('Mixed Multi-Color', Color(0xFFFACC15), 0),
-          ('Sunflower Yellow', Color(0xFFFACC15), 1),
-          ('Lime Green', Color(0xFF4ADE80), 2),
-          ('Rose Pink', Color(0xFFF43F5E), 3),
-          ('Electric Cyan', Color(0xFF38BDF8), 4),
-          ('Neon Violet', Color(0xFFC084FC), 5),
-          ('Neon Orange', Color(0xFFFB923C), 6),
-          ('Minimal Slate', Color(0xFF94A3B8), 7),
-        ];
-
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E293B) : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.palette_rounded, size: 24),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'App Color Theme',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Match all app colors to a single accent theme of your choice, or keep mixed colors.',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: options.map((opt) {
-                  final selected = state.palette == opt.$3;
-                  return ChoiceChip(
-                    avatar: Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: opt.$2,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 1.5),
-                      ),
-                    ),
-                    label: Text(opt.$1),
-                    selected: selected,
-                    onSelected: (_) {
-                      notifier.setPalette(opt.$3);
-                      Navigator.pop(context);
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -549,7 +453,7 @@ class _HomeState extends ConsumerState<HomeScreen> {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _categoryIcons.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (context, i) {
                           final cat = _categoryIcons.keys.elementAt(i);
                           final selected = _filter == cat;

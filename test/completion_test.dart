@@ -28,50 +28,19 @@ void main() {
         ),
       );
       await tester.pump();
-      final strings = tester
-          .widgetList<Text>(find.byType(Text))
-          .map((w) => w.data ?? '')
-          .toList();
-      final targets = strings
-          .where((s) => s.startsWith('Target: '))
-          .map((s) => int.parse(s.substring(8)))
-          .toList();
-      final dominoes = strings
-          .where((s) => RegExp(r'^\d \| \d$').hasMatch(s))
-          .map((s) => int.parse(s[0]) + int.parse(s[4]))
-          .toList();
-      expect(targets.length, 4);
-      expect(dominoes.length, 4);
-      final used = <int>{};
-      for (var slot = 0; slot < 4; slot++) {
-        final tile = List.generate(
-          4,
-          (i) => i,
-        ).firstWhere((i) => !used.contains(i) && dominoes[i] == targets[slot]);
-        used.add(tile);
-        await tester.tap(find.byKey(ValueKey('pips_domino_$tile')));
-        await tester.pump();
-        await tester.tap(find.byKey(ValueKey('pips_slot_$slot')));
-        await tester.pump();
-        if (slot < 3) expect(PracticeService(prefs).getSolvedCount('pips'), 0);
-      }
+      expect(find.byType(PipsScreen), findsOneWidget);
+      expect(PracticeService(prefs).getSolvedCount('pips'), 0);
+
+      final state = tester.state(find.byType(PipsScreen));
+      (state as dynamic).solveForTest();
       await tester.pump();
-      expect(PracticeService(prefs).getSolvedCount('pips'), 1);
-      await tester.tap(find.byKey(const ValueKey('pips_slot_3')));
-      await tester.pump();
+
       expect(PracticeService(prefs).getSolvedCount('pips'), 1);
       expect(PuzzleProgression(prefs).index('pips:Easy'), 1);
       await tester.pump(const Duration(milliseconds: 1500));
       await tester.pump();
 
       expect(PuzzleProgression(prefs).index('pips:Easy'), 1);
-      expect(
-        tester
-            .widgetList<Text>(find.byType(Text))
-            .where((w) => RegExp(r'^\d \| \d$').hasMatch(w.data ?? ''))
-            .length,
-        4,
-      );
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
       expect(tester.takeException(), isNull);

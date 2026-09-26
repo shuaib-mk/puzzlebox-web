@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-import '../core/widgets/puzzle_pal.dart';
 
 /// A Neo-Brutalist animated loading/splash screen displayed on app startup.
 class LoadingScreen extends StatefulWidget {
@@ -87,12 +85,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black;
 
-    final tileColors = [
-      const Color(0xFF4ADE80), // Lime Green
-      const Color(0xFFFACC15), // Sunflower Yellow
-      const Color(0xFFF43F5E), // Rose Pink
-      const Color(0xFF38BDF8), // Cyan
-    ];
+
 
     return Scaffold(
       backgroundColor: backgroundColor,

@@ -69,6 +69,8 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
     _loadStrandsPuzzle();
   }
 
+  final Map<String, List<int>> _canonicalPaths = {};
+
   void _loadStrandsPuzzle() {
     final rand = Random(puzzleSeed());
     final themes = [
@@ -148,12 +150,16 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
       (_) =>
           List.generate(6, (_) => String.fromCharCode(65 + rand.nextInt(26))),
     );
+    _canonicalPaths.clear();
     var cursor = 0;
     for (final w in chosen) {
+      final wPath = <int>[];
       for (var i = 0; i < w.length; i++) {
         final cell = path[cursor++];
         grid[cell ~/ 6][cell % 6] = w[i];
+        wPath.add(cell);
       }
+      _canonicalPaths[w] = wPath;
     }
     _currentTheme = StrandsThemeItem(
       themeHint: theme[0],
@@ -194,6 +200,14 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
     setState(() => _selectedIndices.add(index));
   }
 
+  bool _listEquals(List<int> a, List<int> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   void _submitSelection() {
     final word = _selectedIndices
         .map((i) => _currentTheme.grid[i ~/ _cols][i % _cols])
@@ -204,7 +218,11 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
       final remaining = _currentTheme.themeWords
           .where((w) => w != word && !_foundThemeWords.contains(w))
           .toList();
-      if (solveStrands(_currentTheme.grid, remaining, {
+      final isCanonical = _canonicalPaths[word] != null &&
+          _listEquals(_selectedIndices, _canonicalPaths[word]!);
+      if (!isCanonical &&
+          remaining.isNotEmpty &&
+          solveStrands(_currentTheme.grid, remaining, {
             ..._foundIndices,
             ..._selectedIndices,
           }) ==
@@ -311,13 +329,13 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
               remaining,
               _foundIndices,
             );
-            if (solution == null) {
+            final path = _canonicalPaths[w] ?? solution?[w];
+            if (path == null) {
               showPuzzleHint(
                 'Undo the last word to free a path, then try Hint again.',
               );
               return;
             }
-            final path = solution[w]!;
             showPuzzleHint(
               '$w starts at row ${path.first ~/ 6 + 1}, column ${path.first % 6 + 1}. Follow neighboring letters.',
             );
@@ -407,7 +425,6 @@ class _StrandsScreenState extends ConsumerState<StrandsScreen>
                         final isSpangram = _spangramIndices.contains(index);
 
                         Color tileBg = isDark ? const Color(0xFF1E293B) : Colors.white;
-                        Color textColor = Colors.black;
 
                         if (isSpangram) {
                           tileBg = AppColors.spangram;

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/settings_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/game_mode_toggle.dart';
 import '../models/letter_state.dart';
@@ -36,31 +34,44 @@ class KeyboardWidget extends ConsumerWidget {
       }
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: _rows.map((row) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: row.map((key) {
-                final state = game.keyStates[key.toLowerCase()];
-                return Expanded(
-                  flex: key == 'ENTER' || key == '⌫' ? 15 : 10,
-                  child: _KeyButton(
-                    label: key,
-                    state: state,
-                    onTap: () => onKey(key),
-                    isWide: key == 'ENTER' || key == '⌫',
-                  ),
-                );
-              }).toList(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          width: constraints.maxWidth,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: 380,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _rows.map((row) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: row.map((key) {
+                          final state = game.keyStates[key.toLowerCase()];
+                          return Expanded(
+                            flex: key == 'ENTER' || key == '⌫' ? 15 : 10,
+                            child: _KeyButton(
+                              label: key,
+                              state: state,
+                              onTap: () => onKey(key),
+                              isWide: key == 'ENTER' || key == '⌫',
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -103,14 +114,12 @@ class _KeyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final w = isWide ? 58.0 : 36.0;
 
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 2.5),
-        width: w,
+        margin: const EdgeInsets.symmetric(horizontal: 1.5),
         height: 54,
         decoration: BoxDecoration(
           color: _bg(context, isDark),

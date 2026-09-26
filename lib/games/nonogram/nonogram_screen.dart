@@ -213,7 +213,12 @@ class _NonogramScreenState extends ConsumerState<NonogramScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Tap to fill · long-press to mark ✕'),
+                      const Expanded(
+                        child: Text(
+                          'Tap to fill · long-press to mark ✕',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       if (_isSolved)
                         Text(
                           'Solved!',

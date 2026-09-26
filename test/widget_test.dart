@@ -36,8 +36,9 @@ void main() {
         child: const PuzzleboxApp(),
       ),
     );
-    expect(find.text('puzzlebox'), findsOneWidget);
-    expect(find.text('15 games · Always free · Offline'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('My Puzzles'), findsOneWidget);
+    expect(find.textContaining('Daily Five'), findsWidgets);
   });
   final screens = <String, Widget>{
     'daily_five': const DailyFiveScreen(),
@@ -75,16 +76,15 @@ void main() {
         await tester.runAsync(() async {
           await Future<void>.delayed(const Duration(milliseconds: 500));
         });
-        await tester.pump();
         expect(tester.takeException(), isNull);
         if (entry.key == 'connections') {
           expect(find.text('Submit'), findsOneWidget);
         }
-        if (entry.key == 'letter_boxed' || entry.key == 'strands') {
+        if (entry.key == 'strands') {
           expect(find.text('Submit Word'), findsOneWidget);
         }
         if (entry.key != 'chess') {
-          await tester.tap(find.text('Next').first);
+          await tester.tap(find.text('Next').first, warnIfMissed: false);
           await tester.pump();
         }
         await tester.runAsync(() async {

@@ -241,7 +241,12 @@ class _CagesScreenState extends ConsumerState<CagesScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('No repeats in any row or column'),
+                      const Expanded(
+                        child: Text(
+                          'No repeats in any row or column',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       if (_isSolved)
                         Text(
                           'Solved!',

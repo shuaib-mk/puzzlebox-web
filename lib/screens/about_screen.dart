@@ -105,36 +105,42 @@ class AboutScreen extends ConsumerWidget {
                   ),
                 ),
                 const Divider(color: Colors.black, thickness: 2, height: 1),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppTheme.getAccentColor(const Color(0xFF38BDF8), settings.palette),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.black, width: 1.5),
+                Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.getAccentColor(const Color(0xFF38BDF8), settings.palette),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black, width: 1.5),
+                      ),
+                      child: const Icon(Icons.language_rounded, color: Colors.black, size: 18),
                     ),
-                    child: const Icon(Icons.language_rounded, color: Colors.black, size: 18),
+                    title: const Text('q04ti.dev', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Developer website & projects', style: TextStyle(fontWeight: FontWeight.w600)),
+                    trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
+                    onTap: () => _open(context, 'https://q04ti.dev'),
                   ),
-                  title: const Text('q04ti.dev', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Developer website & projects', style: TextStyle(fontWeight: FontWeight.w600)),
-                  trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
-                  onTap: () => _open(context, 'https://q04ti.dev'),
                 ),
                 const Divider(color: Colors.black, thickness: 2, height: 1),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppTheme.getAccentColor(const Color(0xFFF43F5E), settings.palette),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.black, width: 1.5),
+                Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.getAccentColor(const Color(0xFFF43F5E), settings.palette),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black, width: 1.5),
+                      ),
+                      child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 18),
                     ),
-                    child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 18),
+                    title: const Text('Buy q04ti a coffee', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Support independent development', style: TextStyle(fontWeight: FontWeight.w600)),
+                    trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
+                    onTap: () => _open(context, 'https://buymeacoffee.com/q04ti'),
                   ),
-                  title: const Text('Buy q04ti a coffee', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Support independent development', style: TextStyle(fontWeight: FontWeight.w600)),
-                  trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
-                  onTap: () => _open(context, 'https://buymeacoffee.com/q04ti'),
                 ),
               ],
             ),
@@ -172,20 +178,23 @@ class AboutScreen extends ConsumerWidget {
                   ),
                 ),
                 const Divider(color: Colors.black, thickness: 2, height: 1),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.black, width: 1.5),
+                Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black, width: 1.5),
+                      ),
+                      child: const Icon(Icons.language_rounded, color: Colors.black, size: 18),
                     ),
-                    child: const Icon(Icons.language_rounded, color: Colors.black, size: 18),
+                    title: const Text('Etriq', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('etriq.online', style: TextStyle(fontWeight: FontWeight.w600)),
+                    trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
+                    onTap: () => _open(context, 'https://etriq.online'),
                   ),
-                  title: const Text('Etriq', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('etriq.online', style: TextStyle(fontWeight: FontWeight.w600)),
-                  trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
-                  onTap: () => _open(context, 'https://etriq.online'),
                 ),
               ],
             ),
@@ -202,50 +211,53 @@ class AboutScreen extends ConsumerWidget {
                 BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
               ],
             ),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.code_rounded, color: isDark ? Colors.white : Colors.black),
-                  title: const Text('GitHub Repository', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('Source code & releases', style: TextStyle(fontWeight: FontWeight.w600)),
-                  trailing: Icon(Icons.open_in_new_rounded, size: 18, color: isDark ? Colors.white : Colors.black),
-                  onTap: () => _open(context, 'https://github.com/shuaib-mk/puzzlebox'),
-                ),
-                const Divider(color: Colors.black, thickness: 2, height: 1),
-                ListTile(
-                  leading: Icon(Icons.privacy_tip_outlined, color: isDark ? Colors.white : Colors.black),
-                  title: const Text('Privacy & Data', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  subtitle: const Text('No tracking, ads, or account requirements', style: TextStyle(fontWeight: FontWeight.w600)),
-                  onTap: () => showDialog<void>(
-                    context: context,
-                    builder: (c) => AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(color: Colors.black, width: 2.5),
-                      ),
-                      title: Text('Your Data Stays Yours', style: TextStyle(fontWeight: FontWeight.w900, color: isDark ? Colors.white : Colors.black)),
-                      content: const SingleChildScrollView(child: Text(privacyNotice, style: TextStyle(fontWeight: FontWeight.w600))),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(c),
-                          child: const Text('Close'),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.code_rounded, color: isDark ? Colors.white : Colors.black),
+                    title: const Text('GitHub Repository', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Source code & releases', style: TextStyle(fontWeight: FontWeight.w600)),
+                    trailing: Icon(Icons.open_in_new_rounded, size: 18, color: isDark ? Colors.white : Colors.black),
+                    onTap: () => _open(context, 'https://github.com/shuaib-mk/puzzlebox'),
+                  ),
+                  const Divider(color: Colors.black, thickness: 2, height: 1),
+                  ListTile(
+                    leading: Icon(Icons.privacy_tip_outlined, color: isDark ? Colors.white : Colors.black),
+                    title: const Text('Privacy & Data', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('No tracking, ads, or account requirements', style: TextStyle(fontWeight: FontWeight.w600)),
+                    onTap: () => showDialog<void>(
+                      context: context,
+                      builder: (c) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: const BorderSide(color: Colors.black, width: 2.5),
                         ),
-                      ],
+                        title: Text('Your Data Stays Yours', style: TextStyle(fontWeight: FontWeight.w900, color: isDark ? Colors.white : Colors.black)),
+                        content: const SingleChildScrollView(child: Text(privacyNotice, style: TextStyle(fontWeight: FontWeight.w600))),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(c),
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const Divider(color: Colors.black, thickness: 2, height: 1),
-                ListTile(
-                  leading: Icon(Icons.description_outlined, color: isDark ? Colors.white : Colors.black),
-                  title: const Text('Open Source Licenses', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                  onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: 'Puzzlebox',
-                    applicationVersion: '2.4.0',
-                    applicationLegalese: 'Puzzlebox © 2026 q04ti.',
+                  const Divider(color: Colors.black, thickness: 2, height: 1),
+                  ListTile(
+                    leading: Icon(Icons.description_outlined, color: isDark ? Colors.white : Colors.black),
+                    title: const Text('Open Source Licenses', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    onTap: () => showLicensePage(
+                      context: context,
+                      applicationName: 'Puzzlebox',
+                      applicationVersion: '2.4.0',
+                      applicationLegalese: 'Puzzlebox © 2026 q04ti.',
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

@@ -202,24 +202,27 @@ class UnifiedStatsScreen extends ConsumerWidget {
                     BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
                   ],
                 ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  leading: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: gameColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.black, width: 1.5),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: gameColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 1.5),
+                      ),
+                      child: const Icon(Icons.check_rounded, color: Colors.black, size: 18),
                     ),
-                    child: const Icon(Icons.check_rounded, color: Colors.black, size: 18),
-                  ),
-                  title: Text(
-                    (game?['name'] as String?) ?? item['game'] as String,
-                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
-                  ),
-                  subtitle: Text(
-                    '${item['difficulty']} • ${seconds > 0 ? '${seconds}s' : 'Completed'}',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.onSurfaceVariant),
+                    title: Text(
+                      (game?['name'] as String?) ?? item['game'] as String,
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
+                    ),
+                    subtitle: Text(
+                      '${item['difficulty']} • ${seconds > 0 ? '${seconds}s' : 'Completed'}',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.onSurfaceVariant),
+                    ),
                   ),
                 ),
               );
@@ -262,7 +265,7 @@ class UnifiedStatsScreen extends ConsumerWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: gameColor.withOpacity(0.25),
+                      color: gameColor.withValues(alpha: 0.25),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.black, width: 1.8),
                     ),

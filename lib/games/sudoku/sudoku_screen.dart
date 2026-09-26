@@ -426,83 +426,90 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                 // Control Action Row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () => setState(() => _pencilMode = !_pencilMode),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: _pencilMode
-                                ? Theme.of(context).colorScheme.primary
-                                : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black, width: 2.0),
-                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.edit_note, size: 20, color: Colors.black),
-                              SizedBox(width: 4),
-                              Text('Pencil', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _undo,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black, width: 2.0),
-                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.undo, size: 18, color: Colors.black),
-                              SizedBox(width: 4),
-                              Text('Undo', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _erase,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black, width: 2.0),
-                            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
-                          ),
-                          child: const Text('Erase', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
-                        ),
-                      ),
-                      if (shouldShowNextButton(_isSolved))
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
                         GestureDetector(
-                          onTap: nextPuzzle,
+                          onTap: () => setState(() => _pencilMode = !_pencilMode),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: _pencilMode
+                                  ? Theme.of(context).colorScheme.primary
+                                  : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: Colors.black, width: 2.0),
                               boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
                             ),
                             child: Row(
                               children: const [
-                                Text('Next', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                                Icon(Icons.edit_note, size: 20, color: Colors.black),
                                 SizedBox(width: 4),
-                                Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.black),
+                                Text('Pencil', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
                               ],
                             ),
                           ),
                         ),
-                    ],
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: _undo,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black, width: 2.0),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.undo, size: 18, color: Colors.black),
+                                SizedBox(width: 4),
+                                Text('Undo', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: _erase,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black, width: 2.0),
+                              boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                            ),
+                            child: const Text('Erase', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                          ),
+                        ),
+                        if (shouldShowNextButton(_isSolved)) ...[
+                          const SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: nextPuzzle,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.black, width: 2.0),
+                                boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0)],
+                              ),
+                              child: Row(
+                                children: const [
+                                  Text('Next', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.black)),
+                                  SizedBox(width: 4),
+                                  Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.black),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -510,13 +517,15 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
                 // Number keypad
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(
-                      9,
-                      (i) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2.5),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(
+                        9,
+                        (i) => Container(
+                          width: 36,
+                          margin: const EdgeInsets.symmetric(horizontal: 2.0),
                           child: InkWell(
                             key: ValueKey('sudoku_number_${i + 1}'),
                             onTap: () => _onNumberTap(i + 1),

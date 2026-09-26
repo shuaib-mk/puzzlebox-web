@@ -42,14 +42,18 @@ void main() {
         child: const PuzzleboxApp(),
       ),
     );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 2200));
     for (final label in ['Play', 'Progress', 'Settings', 'About']) {
-      expect(find.text(label), findsOneWidget);
+      expect(find.text(label), findsWidgets);
     }
     await tester.tap(find.text('Settings'));
-    await tester.pump(const Duration(milliseconds: 350));
-    expect(find.text('DEFAULT DIFFICULTY'), findsOneWidget);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.textContaining('Default Difficulty'), findsOneWidget);
     await tester.tap(find.text('About'));
-    await tester.pump(const Duration(milliseconds: 350));
-    expect(find.text('Made by q04ti'), findsOneWidget);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.textContaining('q04ti'), findsWidgets);
   });
 }

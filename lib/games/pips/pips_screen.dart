@@ -91,8 +91,18 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
   late List<PipsRegion> _regions;
   late List<TrayDomino> _tray;
   final List<PlacedDomino> _boardDominoes = [];
+  final List<PlacedDomino> _solutionDominoes = [];
   TrayDomino? _selectedTrayDomino;
   bool _isSolved = false;
+
+  void solveForTest() {
+    setState(() {
+      _boardDominoes.clear();
+      _boardDominoes.addAll(_solutionDominoes);
+      _tray.clear();
+    });
+    _checkFullPuzzleCompletion();
+  }
 
   static const _regionColors = [
     Color(0xFFFEF08A), // Pastel Yellow
@@ -139,11 +149,11 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
       _cols = 5;
     }
 
-    final totalCells = _rows * _cols;
     final gridDominoMap = List.generate(_rows, (_) => List<int>.filled(_cols, -1));
     final gridValues = List.generate(_rows, (_) => List<int>.filled(_cols, 0));
     final generatedDominoes = <TrayDomino>[];
 
+    _solutionDominoes.clear();
     int dominoId = 0;
     for (int r = 0; r < _rows; r++) {
       for (int c = 0; c < _cols; c++) {
@@ -160,6 +170,7 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
           gridValues[r][c] = v1;
           gridValues[r][c + 1] = v2;
           generatedDominoes.add(TrayDomino(id: dominoId, val1: v1, val2: v2));
+          _solutionDominoes.add(PlacedDomino(id: dominoId, val1: v1, val2: v2, r1: r, c1: c, r2: r, c2: c + 1, isVertical: false));
           dominoId++;
           placed = true;
         } else if (r + 1 < _rows && gridDominoMap[r + 1][c] == -1) {
@@ -170,6 +181,7 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
           gridValues[r][c] = v1;
           gridValues[r + 1][c] = v2;
           generatedDominoes.add(TrayDomino(id: dominoId, val1: v1, val2: v2, isVertical: true));
+          _solutionDominoes.add(PlacedDomino(id: dominoId, val1: v1, val2: v2, r1: r, c1: c, r2: r + 1, c2: c, isVertical: true));
           dominoId++;
           placed = true;
         } else if (c + 1 < _cols && gridDominoMap[r][c + 1] == -1) {
@@ -180,6 +192,7 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
           gridValues[r][c] = v1;
           gridValues[r][c + 1] = v2;
           generatedDominoes.add(TrayDomino(id: dominoId, val1: v1, val2: v2));
+          _solutionDominoes.add(PlacedDomino(id: dominoId, val1: v1, val2: v2, r1: r, c1: c, r2: r, c2: c + 1, isVertical: false));
           dominoId++;
           placed = true;
         }
@@ -284,12 +297,6 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
       if ((d.r1 == r && d.c1 == c) || (d.r2 == r && d.c2 == c)) return d;
     }
     return null;
-  }
-
-  PipsRegion _getRegionForCell(int r, int c) {
-    return _regions.firstWhere(
-      (reg) => reg.cells.any((pt) => pt.x == r && pt.y == c),
-    );
   }
 
   bool _checkRegionSatisfied(PipsRegion region) {
@@ -619,7 +626,7 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
               padding: const EdgeInsets.symmetric(horizontal: 20),
               scrollDirection: Axis.horizontal,
               itemCount: _tray.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 final d = _tray[index];
                 final isSelected = _selectedTrayDomino == d;
@@ -637,12 +644,16 @@ class _PipsScreenState extends ConsumerState<PipsScreen> with PracticeModeMixin 
                       borderRadius: BorderRadius.circular(14),
                       border: isSelected ? Border.all(color: const Color(0xFFFACC15), width: 3) : null,
                     ),
-                    child: _DominoTileWidget(
-                      val1: d.val1,
-                      val2: d.val2,
-                      isVertical: false,
-                      isPlaced: false,
-                      isSelected: isSelected,
+                    child: SizedBox(
+                      width: 76,
+                      height: 38,
+                      child: _DominoTileWidget(
+                        val1: d.val1,
+                        val2: d.val2,
+                        isVertical: false,
+                        isPlaced: false,
+                        isSelected: isSelected,
+                      ),
                     ),
                   ),
                 );
@@ -677,7 +688,7 @@ class _PipsBoardPainter extends CustomPainter {
     // Fill region background cells
     for (final reg in regions) {
       final paint = Paint()
-        ..color = reg.color.withOpacity(isDark ? 0.40 : 0.85)
+        ..color = reg.color.withValues(alpha: isDark ? 0.40 : 0.85)
         ..style = PaintingStyle.fill;
 
       for (final pt in reg.cells) {
@@ -688,7 +699,7 @@ class _PipsBoardPainter extends CustomPainter {
 
     // Grid Inner Cell Lines
     final gridLinePaint = Paint()
-      ..color = Colors.black.withOpacity(0.18)
+      ..color = Colors.black.withValues(alpha: 0.18)
       ..strokeWidth = 1.0;
 
     for (int r = 1; r < rows; r++) {
@@ -833,7 +844,7 @@ class _PipDots extends StatelessWidget {
           child: Container(
             width: 3.5,
             height: 3.5,
-            decoration: BoxDecoration(color: color.withOpacity(0.3), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.3), shape: BoxShape.circle),
           ),
         ),
       );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
 import '../models/letter_state.dart';
 
 /// A single animated tile that flips to reveal its [LetterState].

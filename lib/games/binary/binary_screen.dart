@@ -244,7 +244,12 @@ class _BinaryScreenState extends ConsumerState<BinaryScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Equal 0s and 1s · no triples · no twins'),
+                      const Expanded(
+                        child: Text(
+                          'Equal 0s and 1s · no triples · no twins',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       if (_isSolved)
                         Text(
                           'Solved!',

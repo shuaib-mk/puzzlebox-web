@@ -420,13 +420,16 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
                   BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
                 ],
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildNeoModeTab('Daily Puzzles', ChessGameMode.dailyPuzzle, colors),
-                  _buildNeoModeTab('Vs AI', ChessGameMode.vsAI, colors),
-                  _buildNeoModeTab('Pass & Play', ChessGameMode.passAndPlay, colors),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildNeoModeTab('Daily Puzzles', ChessGameMode.dailyPuzzle, colors),
+                    _buildNeoModeTab('Vs AI', ChessGameMode.vsAI, colors),
+                    _buildNeoModeTab('Pass & Play', ChessGameMode.passAndPlay, colors),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),

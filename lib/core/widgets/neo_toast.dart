@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// App-wide Neo-Brutalist floating top toast notification card.
@@ -67,12 +68,12 @@ class _NeoToastCard extends StatefulWidget {
   @override
   State<_NeoToastCard> createState() => _NeoToastCardState();
 }
-
 class _NeoToastCardState extends State<_NeoToastCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  Timer? _dismissTimer;
 
   @override
   void initState() {
@@ -94,7 +95,7 @@ class _NeoToastCardState extends State<_NeoToastCard>
 
     _controller.forward();
 
-    Future.delayed(widget.duration, () {
+    _dismissTimer = Timer(widget.duration, () {
       if (mounted) {
         _dismiss();
       }
@@ -102,6 +103,7 @@ class _NeoToastCardState extends State<_NeoToastCard>
   }
 
   void _dismiss() async {
+    _dismissTimer?.cancel();
     if (!_controller.isAnimating && _controller.status == AnimationStatus.dismissed) {
       return;
     }
@@ -111,6 +113,7 @@ class _NeoToastCardState extends State<_NeoToastCard>
 
   @override
   void dispose() {
+    _dismissTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -123,67 +126,73 @@ class _NeoToastCardState extends State<_NeoToastCard>
       top: topPadding,
       left: 16,
       right: 16,
-      child: Material(
-        color: Colors.transparent,
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: GestureDetector(
-              onTap: _dismiss,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.black, width: 2.5),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black,
-                          offset: Offset(3.5, 3.5),
-                          blurRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: widget.cardColor,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.black, width: 1.8),
-                          ),
-                          child: Icon(widget.icon, size: 18, color: Colors.black),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            widget.message,
-                            style: TextStyle(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.w800,
-                              color: widget.isDark ? Colors.white : Colors.black,
+      child: IgnorePointer(
+        ignoring: true,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: IgnorePointer(
+                  ignoring: false,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: GestureDetector(
+                      onTap: _dismiss,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.black, width: 2.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black,
+                              offset: Offset(3.5, 3.5),
+                              blurRadius: 0,
                             ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        InkWell(
-                          onTap: _dismiss,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 18,
-                              color: widget.isDark ? Colors.white70 : Colors.black87,
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: widget.cardColor,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black, width: 1.8),
+                              ),
+                              child: Icon(widget.icon, size: 18, color: Colors.black),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                widget.message,
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: widget.isDark ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            InkWell(
+                              onTap: _dismiss,
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 18,
+                                  color: widget.isDark ? Colors.white70 : Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
