@@ -64,7 +64,7 @@ class AboutScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            'Version 3.0.0 • Build 10',
+            'Version 1.1 • Build 2',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -251,7 +251,7 @@ class AboutScreen extends ConsumerWidget {
                     title: const Text('Suggest a Game or Feature', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
                     subtitle: const Text('Got an idea for a new game or update?', style: TextStyle(fontWeight: FontWeight.w600)),
                     trailing: Icon(Icons.open_in_new_rounded, size: 18, color: isDark ? Colors.white : Colors.black),
-                    onTap: () => _open(context, 'https://puzzlebox.q04ti.dev'),
+                    onTap: () => _open(context, 'https://puzzlebox.q04ti.dev/#suggestions'),
                   ),
                   const Divider(color: Colors.black, thickness: 2, height: 1),
                   ListTile(

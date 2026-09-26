@@ -2,7 +2,7 @@ name: puzzlebox
 description: "Puzzlebox — Daily word & logic puzzle games"
 publish_to: 'none'
 
-version: 3.0.0+10
+version: 1.1.0+2
 
 
 environment:

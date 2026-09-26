@@ -44,7 +44,7 @@ class UnifiedStatsScreen extends ConsumerWidget {
     ];
 
     final content = SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -52,7 +52,8 @@ class UnifiedStatsScreen extends ConsumerWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: primaryAccent,
                   borderRadius: BorderRadius.circular(14),
@@ -61,7 +62,8 @@ class UnifiedStatsScreen extends ConsumerWidget {
                     BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
                   ],
                 ),
-                child: const Icon(Icons.bar_chart_rounded, color: Colors.black, size: 24),
+                alignment: Alignment.center,
+                child: const Icon(Icons.bar_chart_rounded, color: Colors.black, size: 22),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -84,14 +86,18 @@ class UnifiedStatsScreen extends ConsumerWidget {
                           color: engagement.currentStreak > 0 ? const Color(0xFFF97316) : colors.onSurfaceVariant,
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          engagement.currentStreak == 0
-                              ? 'Solve a puzzle today to start your streak.'
-                              : '${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                            color: colors.onSurfaceVariant,
+                        Expanded(
+                          child: Text(
+                            engagement.currentStreak == 0
+                                ? 'Solve a puzzle today to start your streak.'
+                                : '${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              color: colors.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -99,37 +105,46 @@ class UnifiedStatsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              IconButton(
-                style: IconButton.styleFrom(
-                  backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  side: const BorderSide(color: Colors.black, width: 2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              const SizedBox(width: 8),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black, width: 2.2),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0),
+                  ],
                 ),
-                icon: const Icon(Icons.share_rounded, size: 20, color: Colors.black),
-                tooltip: 'Share Statistics',
-                onPressed: () async {
-                  final text = '''
-Puzzlebox Statistics 🧩
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.share_rounded, size: 19, color: isDark ? Colors.white : Colors.black),
+                  tooltip: 'Share Statistics',
+                  onPressed: () async {
+                    final text = '''
+Puzzlebox Statistics
 • Completed Puzzles: ${engagement.totalCompleted}
-• Current Streak: ${engagement.currentStreak} Days 🔥
-• Best Streak: ${engagement.bestStreak} Days 🏆
-• Total Play Time: ${_time(engagement.totalSeconds)} ⏱️
+• Current Streak: ${engagement.currentStreak} Days
+• Best Streak: ${engagement.bestStreak} Days
+• Total Play Time: ${_time(engagement.totalSeconds)}
 
-https://github.com/Sinxn-coder/puzzlebox
+https://puzzlebox.q04ti.dev
 '''.trim();
-                  await Clipboard.setData(ClipboardData(text: text));
-                  try {
-                    await Share.share(text);
-                  } catch (_) {}
-                  if (context.mounted) {
-                    NeoToast.show(
-                      context,
-                      'Statistics copied to clipboard!',
-                      icon: Icons.check_circle_rounded,
-                      color: const Color(0xFF4ADE80),
-                    );
-                  }
-                },
+                    await Clipboard.setData(ClipboardData(text: text));
+                    try {
+                      await Share.share(text);
+                    } catch (_) {}
+                    if (context.mounted) {
+                      NeoToast.show(
+                        context,
+                        'Statistics copied to clipboard!',
+                        icon: Icons.check_circle_rounded,
+                        color: const Color(0xFF4ADE80),
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),

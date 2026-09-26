@@ -26,12 +26,13 @@ class SettingsScreen extends ConsumerWidget {
 
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 100),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: AppTheme.getAccentColor(const Color(0xFFFACC15), state.palette),
                   borderRadius: BorderRadius.circular(14),
@@ -40,7 +41,8 @@ class SettingsScreen extends ConsumerWidget {
                     BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
                   ],
                 ),
-                child: const Icon(Icons.tune_rounded, color: Colors.black, size: 24),
+                alignment: Alignment.center,
+                child: const Icon(Icons.tune_rounded, color: Colors.black, size: 22),
               ),
               const SizedBox(width: 14),
               Column(

@@ -3,10 +3,6 @@
     android:height="108dp"
     android:viewportWidth="512"
     android:viewportHeight="512">
-    <!-- shadow ellipse -->
-    <path android:fillColor="#293D7C16" android:pathData="M 106,416 a 150,24 0 1,0 300,0 a 150,24 0 1,0 -300,0"/>
-    <!-- main body -->
-    <path android:fillColor="#3D7C16" android:pathData="M122 173c0-38 31-69 69-69h28c0-38 31-69 69-69s69 31 69 69c38 0 69 31 69 69v18c38 0 69 31 69 69s-31 69-69 69v29c0 38-31 69-69 69H191c-38 0-69-31-69-69v-29c-38 0-69-31-69-69s31-69 69-69z"/>
     <!-- eyes bg -->
     <path android:fillColor="#ffffff" android:pathData="M 171,229 a 35,43 0 1,0 70,0 a 35,43 0 1,0 -70,0"/>
     <path android:fillColor="#ffffff" android:pathData="M 272,229 a 35,43 0 1,0 70,0 a 35,43 0 1,0 -70,0"/>

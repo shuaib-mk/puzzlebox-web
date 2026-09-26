@@ -53,7 +53,7 @@ class EngagementService {
   static const _key = 'engagement_v1';
 
   EngagementSnapshot load({DateTime? now}) {
-    final today = _day(now ?? DateTime.now());
+    final todayStr = _day(now ?? DateTime.now());
     try {
       final data =
           jsonDecode(prefs.getString(_key) ?? '{}') as Map<String, dynamic>;
@@ -61,13 +61,13 @@ class EngagementService {
         data['days'] ?? const <String>[],
       ).toSet().toList()..sort();
       var streak = 0;
-      var cursor = DateTime.parse(today);
-      if (!days.contains(today)) {
-        cursor = cursor.subtract(const Duration(days: 1));
+      var cursor = _parseDay(todayStr);
+      if (!days.contains(_day(cursor))) {
+        cursor = _prevDay(cursor);
       }
       while (days.contains(_day(cursor))) {
         streak++;
-        cursor = cursor.subtract(const Duration(days: 1));
+        cursor = _prevDay(cursor);
       }
       return EngagementSnapshot(
         streak,
@@ -115,9 +115,10 @@ class EngagementService {
         'at': (now ?? DateTime.now()).toIso8601String(),
       },
     ];
-    final newBest = current.bestStreak > _streakFor(days, today)
+    final currentStreak = _streakFor(days, today);
+    final newBest = current.bestStreak > currentStreak
         ? current.bestStreak
-        : _streakFor(days, today);
+        : currentStreak;
     final newPlaytime = (current.storedPlaytimeSeconds) + seconds;
 
     await prefs.setString(
@@ -136,12 +137,21 @@ class EngagementService {
   static String _day(DateTime value) =>
       '${value.year.toString().padLeft(4, '0')}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
 
-  static int _streakFor(List<String> days, String today) {
+  static DateTime _parseDay(String dayStr) {
+    final parts = dayStr.split('-').map(int.parse).toList();
+    return DateTime(parts[0], parts[1], parts[2]);
+  }
+
+  static DateTime _prevDay(DateTime dt) {
+    return DateTime(dt.year, dt.month, dt.day - 1);
+  }
+
+  static int _streakFor(List<String> days, String todayStr) {
     var streak = 0;
-    var cursor = DateTime.parse(today);
+    var cursor = _parseDay(todayStr);
     while (days.contains(_day(cursor))) {
       streak++;
-      cursor = cursor.subtract(const Duration(days: 1));
+      cursor = _prevDay(cursor);
     }
     return streak;
   }
