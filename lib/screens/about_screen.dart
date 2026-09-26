@@ -220,7 +220,7 @@ class AboutScreen extends ConsumerWidget {
                     title: const Text('GitHub Repository', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
                     subtitle: const Text('Source code & releases', style: TextStyle(fontWeight: FontWeight.w600)),
                     trailing: Icon(Icons.open_in_new_rounded, size: 18, color: isDark ? Colors.white : Colors.black),
-                    onTap: () => _open(context, 'https://github.com/shuaib-mk/puzzlebox'),
+                    onTap: () => _open(context, 'https://github.com/Sinxn-coder/puzzlebox'),
                   ),
                   const Divider(color: Colors.black, thickness: 2, height: 1),
                   ListTile(

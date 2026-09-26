@@ -6,9 +6,9 @@ Fifteen offline puzzle games. Unlimited play, free hints, local progress, and fo
 
 ## Download for Android
 
-**[Download the latest Puzzlebox APK](https://github.com/shuaib-mk/puzzlebox/releases/latest/download/puzzlebox.apk)**
+**[Download the latest Puzzlebox APK](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox.apk)**
 
-[All releases and checksums](https://github.com/shuaib-mk/puzzlebox/releases)
+[All releases and checksums](https://github.com/Sinxn-coder/puzzlebox/releases)
 
 Open the APK on Android and allow installation from your browser or file manager when Android asks. The release is signed with a dedicated Puzzlebox key. An older prototype signed with a debug key cannot be updated in place with this release; Android treats the signatures as different. Do not delete an old installation without first considering its locally stored progress.
 
