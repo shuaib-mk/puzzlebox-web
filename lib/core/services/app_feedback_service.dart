@@ -7,15 +7,18 @@ import 'js_eval/js_eval.dart';
 
 /// App-wide Audio & Rhythmic Haptic Feedback Service.
 abstract final class AppFeedbackService {
+  static const MethodChannel _channel = MethodChannel('com.etriq.puzzlebox/feedback');
+
   /// Light key tap feedback
   static Future<void> tap(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
+      _nativeVibratePattern([0, 25]);
       await HapticFeedback.selectionClick();
-      await HapticFeedback.vibrate();
-      _callJSVibrate([15]);
+      _callJSVibrate([25]);
     }
     if (settings.soundEnabled) {
+      _nativePlayTone('tap');
       _callJSAudio('playTap');
       await SystemSound.play(SystemSoundType.click);
     }
@@ -25,14 +28,13 @@ abstract final class AppFeedbackService {
   static Future<void> heartbeat(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _callJSVibrate([40, 70, 60, 120, 40]);
-      await HapticFeedback.vibrate();
-      await Future.delayed(const Duration(milliseconds: 110));
-      await HapticFeedback.vibrate();
+      _nativeVibratePattern([0, 40, 60, 50]);
+      await HapticFeedback.mediumImpact();
+      _callJSVibrate([40, 70, 60]);
     }
     if (settings.soundEnabled) {
+      _nativePlayTone('heartbeat');
       _callJSAudio('playHeartbeat');
-      await SystemSound.play(SystemSoundType.click);
     }
   }
 
@@ -40,16 +42,13 @@ abstract final class AppFeedbackService {
   static Future<void> victory(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _callJSVibrate([30, 50, 40, 50, 50, 50, 120]);
-      await HapticFeedback.vibrate();
-      await Future.delayed(const Duration(milliseconds: 80));
-      await HapticFeedback.selectionClick();
-      await Future.delayed(const Duration(milliseconds: 100));
-      await HapticFeedback.vibrate();
+      _nativeVibratePattern([0, 40, 40, 50, 40, 70]);
+      await HapticFeedback.heavyImpact();
+      _callJSVibrate([30, 50, 40, 50, 50]);
     }
     if (settings.soundEnabled) {
+      _nativePlayTone('success');
       _callJSAudio('playSuccess');
-      await SystemSound.play(SystemSoundType.click);
     }
   }
 
@@ -57,29 +56,43 @@ abstract final class AppFeedbackService {
   static Future<void> error(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
+      _nativeVibratePattern([0, 70, 50, 90]);
+      await HapticFeedback.heavyImpact();
       _callJSVibrate([80, 60, 120]);
-      await HapticFeedback.vibrate();
-      await Future.delayed(const Duration(milliseconds: 100));
-      await HapticFeedback.vibrate();
     }
     if (settings.soundEnabled) {
+      _nativePlayTone('error');
       _callJSAudio('playError');
-      await SystemSound.play(SystemSoundType.alert);
     }
   }
 
   /// Test feedback triggered when turning toggles ON in settings sheet
   static Future<void> testHaptic() async {
+    _nativeVibratePattern([0, 35, 50, 50]);
+    await HapticFeedback.mediumImpact();
     _callJSVibrate([40, 70, 60, 120, 40]);
-    await HapticFeedback.selectionClick();
-    await Future.delayed(const Duration(milliseconds: 60));
-    await HapticFeedback.vibrate();
   }
 
   static Future<void> testSound() async {
+    _nativePlayTone('success');
     _callJSAudio('playSuccess');
     await SystemSound.play(SystemSoundType.click);
-    await SystemSound.play(SystemSoundType.alert);
+  }
+
+  static void _nativeVibratePattern(List<int> pattern) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        _channel.invokeMethod('vibrate', {'pattern': pattern});
+      } catch (_) {}
+    }
+  }
+
+  static void _nativePlayTone(String type) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        _channel.invokeMethod('playTone', {'type': type});
+      } catch (_) {}
+    }
   }
 
   static void _callJSVibrate(List<int> pattern) {
