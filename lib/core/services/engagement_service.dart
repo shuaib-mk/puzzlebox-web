@@ -61,13 +61,23 @@ class EngagementService {
         data['days'] ?? const <String>[],
       ).toSet().toList()..sort();
       var streak = 0;
-      var cursor = _parseDay(todayStr);
-      if (!days.contains(_day(cursor))) {
-        cursor = _prevDay(cursor);
-      }
-      while (days.contains(_day(cursor))) {
-        streak++;
-        cursor = _prevDay(cursor);
+      final todayDt = _parseDay(todayStr);
+      final yesterdayStr = _day(_prevDay(todayDt));
+
+      if (days.contains(todayStr)) {
+        var cursor = todayDt;
+        while (days.contains(_day(cursor))) {
+          streak++;
+          cursor = _prevDay(cursor);
+        }
+      } else if (days.contains(yesterdayStr)) {
+        var cursor = _prevDay(todayDt);
+        while (days.contains(_day(cursor))) {
+          streak++;
+          cursor = _prevDay(cursor);
+        }
+      } else {
+        streak = 0;
       }
       return EngagementSnapshot(
         streak,

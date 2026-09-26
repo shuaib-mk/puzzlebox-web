@@ -248,32 +248,35 @@ class _HomeState extends ConsumerState<HomeScreen> {
                       backgroundColor: primaryAccent,
                     ),
                     const Spacer(),
-                    if (engagement.currentStreak > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: primaryAccent,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.black, width: 2.5),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.local_fire_department_rounded, size: 18, color: Colors.black),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${engagement.currentStreak}d Streak',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: primaryAccent,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.black, width: 2.5),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                        ],
                       ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.local_fire_department_rounded,
+                            size: 18,
+                            color: engagement.currentStreak > 0 ? const Color(0xFFF97316) : Colors.black87,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${engagement.currentStreak}d Streak',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
