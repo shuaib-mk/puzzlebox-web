@@ -1,8 +1,6 @@
 package com.etriq.puzzlebox
 
 import android.content.Context
-import android.media.AudioManager
-import android.media.ToneGenerator
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -13,30 +11,15 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.etriq.puzzlebox/feedback"
-    private var toneGenerator: ToneGenerator? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        try {
-            toneGenerator = ToneGenerator(AudioManager.STREAM_MUSIC, 80)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "vibrate" -> {
-                    val pattern = call.argument<List<Int>>("pattern")
-                    if (pattern != null && pattern.isNotEmpty()) {
-                        vibratePattern(pattern)
-                    } else {
-                        vibrateOneShot(30, 255)
-                    }
-                    result.success(true)
-                }
-                "playTone" -> {
                     val type = call.argument<String>("type") ?: "tap"
-                    playNativeTone(type)
+                    triggerVibration(type)
                     result.success(true)
                 }
                 else -> result.notImplemented()
@@ -44,29 +27,50 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun vibrateOneShot(milliseconds: Long, amplitude: Int) {
-        val vibrator = getVibrator()
-        if (vibrator != null && vibrator.hasVibrator()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val amp = if (amplitude in 1..255) amplitude else VibrationEffect.DEFAULT_AMPLITUDE
-                vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, amp))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(milliseconds)
+    private fun triggerVibration(type: String) {
+        val vibrator = getVibrator() ?: return
+        if (!vibrator.hasVibrator()) return
+
+        when (type) {
+            "tap" -> {
+                vibrateOneShot(vibrator, 35, 255)
+            }
+            "victory" -> {
+                val timings = longArrayOf(0, 120, 60, 150, 60, 220)
+                val amplitudes = intArrayOf(0, 255, 0, 255, 0, 255)
+                vibrateWaveform(vibrator, timings, amplitudes)
+            }
+            "heartbeat" -> {
+                val timings = longArrayOf(0, 80, 70, 100)
+                val amplitudes = intArrayOf(0, 255, 0, 255)
+                vibrateWaveform(vibrator, timings, amplitudes)
+            }
+            "error" -> {
+                val timings = longArrayOf(0, 90, 70, 140)
+                val amplitudes = intArrayOf(0, 255, 0, 255)
+                vibrateWaveform(vibrator, timings, amplitudes)
+            }
+            else -> {
+                vibrateOneShot(vibrator, 40, 255)
             }
         }
     }
 
-    private fun vibratePattern(timings: List<Int>) {
-        val vibrator = getVibrator()
-        if (vibrator != null && vibrator.hasVibrator()) {
-            val longTimings = LongArray(timings.size) { i -> timings[i].toLong() }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(longTimings, -1))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(longTimings, -1)
-            }
+    private fun vibrateOneShot(vibrator: Vibrator, ms: Long, amplitude: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(ms, amplitude))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(ms)
+        }
+    }
+
+    private fun vibrateWaveform(vibrator: Vibrator, timings: LongArray, amplitudes: IntArray) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(timings, -1)
         }
     }
 
@@ -77,21 +81,6 @@ class MainActivity : FlutterActivity() {
         } else {
             @Suppress("DEPRECATION")
             getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-        }
-    }
-
-    private fun playNativeTone(type: String) {
-        try {
-            val tg = toneGenerator ?: ToneGenerator(AudioManager.STREAM_MUSIC, 80).also { toneGenerator = it }
-            when (type) {
-                "tap" -> tg.startTone(ToneGenerator.TONE_PROP_BEEP, 35)
-                "success" -> tg.startTone(ToneGenerator.TONE_PROP_ACK, 120)
-                "heartbeat" -> tg.startTone(ToneGenerator.TONE_PROP_BEEP2, 50)
-                "error" -> tg.startTone(ToneGenerator.TONE_PROP_NACK, 150)
-                else -> tg.startTone(ToneGenerator.TONE_PROP_BEEP, 35)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }

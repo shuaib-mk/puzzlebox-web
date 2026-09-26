@@ -173,18 +173,7 @@ class SettingsScreen extends ConsumerWidget {
                       if (v) AppFeedbackService.testHaptic();
                     },
                   ),
-                  const Divider(color: Colors.black, thickness: 2),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    activeThumbColor: AppTheme.neoPalettes[state.palette.clamp(0, 4)],
-                    title: const Text('Sound Effects', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                    subtitle: const Text('Audio feedback during play'),
-                    value: state.soundEnabled,
-                    onChanged: (v) {
-                      notifier.setSoundEnabled(v);
-                      if (v) AppFeedbackService.testSound();
-                    },
-                  ),
+
                   const Divider(color: Colors.black, thickness: 2),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,

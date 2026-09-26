@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
 import 'js_eval/js_eval.dart';
 
-/// App-wide Audio & Rhythmic Haptic Feedback Service.
+/// App-wide Rhythmic Haptic Feedback Service.
 abstract final class AppFeedbackService {
   static const MethodChannel _channel = MethodChannel('com.etriq.puzzlebox/feedback');
 
@@ -13,28 +13,19 @@ abstract final class AppFeedbackService {
   static Future<void> tap(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _nativeVibratePattern([0, 25]);
+      _nativeVibrate('tap');
       await HapticFeedback.selectionClick();
       _callJSVibrate([25]);
     }
-    if (settings.soundEnabled) {
-      _nativePlayTone('tap');
-      _callJSAudio('playTap');
-      await SystemSound.play(SystemSoundType.click);
-    }
   }
 
-  /// Rhythmic Heartbeat pulse feedback (for winning pace, combo streaks, intense moments)
+  /// Rhythmic Heartbeat pulse feedback
   static Future<void> heartbeat(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _nativeVibratePattern([0, 40, 60, 50]);
+      _nativeVibrate('heartbeat');
       await HapticFeedback.mediumImpact();
       _callJSVibrate([40, 70, 60]);
-    }
-    if (settings.soundEnabled) {
-      _nativePlayTone('heartbeat');
-      _callJSAudio('playHeartbeat');
     }
   }
 
@@ -42,13 +33,9 @@ abstract final class AppFeedbackService {
   static Future<void> victory(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _nativeVibratePattern([0, 40, 40, 50, 40, 70]);
+      _nativeVibrate('victory');
       await HapticFeedback.heavyImpact();
-      _callJSVibrate([30, 50, 40, 50, 50]);
-    }
-    if (settings.soundEnabled) {
-      _nativePlayTone('success');
-      _callJSAudio('playSuccess');
+      _callJSVibrate([120, 60, 150, 60, 220]);
     }
   }
 
@@ -56,41 +43,23 @@ abstract final class AppFeedbackService {
   static Future<void> error(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      _nativeVibratePattern([0, 70, 50, 90]);
+      _nativeVibrate('error');
       await HapticFeedback.heavyImpact();
-      _callJSVibrate([80, 60, 120]);
-    }
-    if (settings.soundEnabled) {
-      _nativePlayTone('error');
-      _callJSAudio('playError');
+      _callJSVibrate([90, 70, 140]);
     }
   }
 
-  /// Test feedback triggered when turning toggles ON in settings sheet
+  /// Test feedback triggered when turning toggle ON in settings sheet
   static Future<void> testHaptic() async {
-    _nativeVibratePattern([0, 35, 50, 50]);
-    await HapticFeedback.mediumImpact();
-    _callJSVibrate([40, 70, 60, 120, 40]);
+    _nativeVibrate('victory');
+    await HapticFeedback.heavyImpact();
+    _callJSVibrate([120, 60, 150, 60, 220]);
   }
 
-  static Future<void> testSound() async {
-    _nativePlayTone('success');
-    _callJSAudio('playSuccess');
-    await SystemSound.play(SystemSoundType.click);
-  }
-
-  static void _nativeVibratePattern(List<int> pattern) {
+  static void _nativeVibrate(String type) {
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       try {
-        _channel.invokeMethod('vibrate', {'pattern': pattern});
-      } catch (_) {}
-    }
-  }
-
-  static void _nativePlayTone(String type) {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      try {
-        _channel.invokeMethod('playTone', {'type': type});
+        _channel.invokeMethod('vibrate', {'type': type});
       } catch (_) {}
     }
   }
@@ -98,12 +67,6 @@ abstract final class AppFeedbackService {
   static void _callJSVibrate(List<int> pattern) {
     if (kIsWeb) {
       evalJS('if (window.PuzzleboxAudio) window.PuzzleboxAudio.vibratePattern(${pattern.toString()})');
-    }
-  }
-
-  static void _callJSAudio(String methodName) {
-    if (kIsWeb) {
-      evalJS('if (window.PuzzleboxAudio) window.PuzzleboxAudio.$methodName()');
     }
   }
 }

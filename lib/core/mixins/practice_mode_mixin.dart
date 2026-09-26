@@ -116,12 +116,7 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     _saveTimer?.cancel();
     if (_sessionKey != null) _prefs?.remove(_sessionKey!);
     final generation = _generation;
-    if (ref.read(settingsProvider).hapticsEnabled) {
-      HapticFeedback.mediumImpact();
-    }
-    if (ref.read(settingsProvider).soundEnabled) {
-      SystemSound.play(SystemSoundType.click);
-    }
+
     try {
       if (mode == GameMode.practice && won) {
         final count = await ref

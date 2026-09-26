@@ -270,19 +270,7 @@ class SettingsSheet extends ConsumerWidget {
                     },
                   ),
                 ),
-                const Divider(color: Colors.black, thickness: 2),
-                _SettingRow(
-                  label: 'Sound Effects',
-                  subtitle: 'Play acoustic audio feedback during games',
-                  child: Switch(
-                    value: settings.soundEnabled,
-                    activeThumbColor: colors.primary,
-                    onChanged: (v) {
-                      ref.read(settingsProvider.notifier).setSoundEnabled(v);
-                      if (v) AppFeedbackService.testSound();
-                    },
-                  ),
-                ),
+
               ],
             ),
           ),
