@@ -11,7 +11,8 @@ abstract final class AppFeedbackService {
   static Future<void> tap(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
-      await HapticFeedback.lightImpact();
+      await HapticFeedback.selectionClick();
+      await HapticFeedback.vibrate();
       _callJSVibrate([15]);
     }
     if (settings.soundEnabled) {
@@ -20,22 +21,18 @@ abstract final class AppFeedbackService {
     }
   }
 
-  static Future<void> _delay(int ms) async {
-    if (Zone.current[#flutter.binding] != null) return;
-    await Future.delayed(Duration(milliseconds: ms));
-  }
-
   /// Rhythmic Heartbeat pulse feedback (for winning pace, combo streaks, intense moments)
   static Future<void> heartbeat(WidgetRef ref) async {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
       _callJSVibrate([40, 70, 60, 120, 40]);
-      await HapticFeedback.mediumImpact();
-      await _delay(110);
-      await HapticFeedback.heavyImpact();
+      await HapticFeedback.vibrate();
+      await Future.delayed(const Duration(milliseconds: 110));
+      await HapticFeedback.vibrate();
     }
     if (settings.soundEnabled) {
       _callJSAudio('playHeartbeat');
+      await SystemSound.play(SystemSoundType.click);
     }
   }
 
@@ -44,14 +41,15 @@ abstract final class AppFeedbackService {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
       _callJSVibrate([30, 50, 40, 50, 50, 50, 120]);
-      await HapticFeedback.mediumImpact();
-      await _delay(80);
-      await HapticFeedback.heavyImpact();
-      await _delay(100);
-      await HapticFeedback.mediumImpact();
+      await HapticFeedback.vibrate();
+      await Future.delayed(const Duration(milliseconds: 80));
+      await HapticFeedback.selectionClick();
+      await Future.delayed(const Duration(milliseconds: 100));
+      await HapticFeedback.vibrate();
     }
     if (settings.soundEnabled) {
       _callJSAudio('playSuccess');
+      await SystemSound.play(SystemSoundType.click);
     }
   }
 
@@ -60,26 +58,28 @@ abstract final class AppFeedbackService {
     final settings = ref.read(settingsProvider);
     if (settings.hapticsEnabled) {
       _callJSVibrate([80, 60, 120]);
-      await HapticFeedback.heavyImpact();
-      await _delay(100);
+      await HapticFeedback.vibrate();
+      await Future.delayed(const Duration(milliseconds: 100));
       await HapticFeedback.vibrate();
     }
     if (settings.soundEnabled) {
       _callJSAudio('playError');
+      await SystemSound.play(SystemSoundType.alert);
     }
   }
 
   /// Test feedback triggered when turning toggles ON in settings sheet
   static Future<void> testHaptic() async {
     _callJSVibrate([40, 70, 60, 120, 40]);
-    await HapticFeedback.mediumImpact();
-    await _delay(100);
-    await HapticFeedback.heavyImpact();
+    await HapticFeedback.selectionClick();
+    await Future.delayed(const Duration(milliseconds: 60));
+    await HapticFeedback.vibrate();
   }
 
   static Future<void> testSound() async {
     _callJSAudio('playSuccess');
     await SystemSound.play(SystemSoundType.click);
+    await SystemSound.play(SystemSoundType.alert);
   }
 
   static void _callJSVibrate(List<int> pattern) {
@@ -94,4 +94,3 @@ abstract final class AppFeedbackService {
     }
   }
 }
-
