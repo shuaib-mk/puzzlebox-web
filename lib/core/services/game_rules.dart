@@ -29,5 +29,14 @@ String rulesFor(String title) {
   if (title.contains('Vertex')) {
     return 'Connect pairs of dots so each dot has exactly the number of incident lines printed inside it. Tap a connected pair again to remove its line. Crossings are allowed. Any graph satisfying all counts wins. Hint suggests a route toward one known solution; other solutions may also work.';
   }
-  return 'Choose any of the eleven games. Unlimited play has no level cap, ads, payments or accounts. Daily challenges are separate from unlimited totals. Your progress and theme are stored on this device.';
+  if (title.contains('Nonogram')) {
+    return 'Tap a cell to fill it, and long-press to mark a cell you know is empty. The numbers beside each row and column tell you the length of each unbroken run of filled cells, in order. A row or column\'s clue turns bright once its filled cells match it exactly. Fill every cell the solution requires to reveal the picture. Undo restores your last move; Hint reveals one cell.';
+  }
+  if (title.contains('Binary')) {
+    return 'Fill every cell with 0 or 1. Each row and column must contain exactly as many 0s as 1s, no three of the same digit may sit in a row, and no two rows or two columns may read identically. Tap a cell to cycle blank → 0 → 1 → blank. Conflicting cells are highlighted. Undo restores your last move; Hint reveals one cell.';
+  }
+  if (title.contains('Cages')) {
+    return 'Fill the grid with 1 through the grid size so no number repeats in any row or column, exactly like a Latin square. Every outlined cage shows a target and an operation; the numbers inside that cage must combine, in some order, to reach it. Select a cell, then tap a number to place it. Undo restores your last move; Hint reveals one cell.';
+  }
+  return 'Choose any of the fifteen games. Unlimited play has no level cap, ads, payments or accounts. Daily challenges are separate from unlimited totals. Your progress and theme are stored on this device.';
 }

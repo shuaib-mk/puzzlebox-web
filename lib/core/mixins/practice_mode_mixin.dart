@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/game_mode_toggle.dart';
+import '../widgets/neo_toast.dart';
+import '../widgets/neo_difficulty_bar.dart';
+import '../services/app_feedback_service.dart';
 import '../services/practice_service.dart';
 import '../services/puzzle_progression.dart';
 import '../services/date_service.dart';
@@ -158,15 +161,19 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         if (mounted && generation == _generation) await nextPuzzle();
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            won
-                ? 'Nicely solved. Next puzzle coming up!'
-                : 'Fresh puzzle coming up.',
-          ),
-          duration: const Duration(milliseconds: 1300),
-        ),
+      if (won) {
+        AppFeedbackService.victory(ref);
+      } else {
+        AppFeedbackService.heartbeat(ref);
+      }
+      NeoToast.show(
+        context,
+        won
+            ? 'Nicely solved. Next puzzle coming up!'
+            : 'Fresh puzzle coming up.',
+        icon: won ? Icons.check_circle_rounded : Icons.auto_awesome_rounded,
+        color: won ? const Color(0xFF4ADE80) : const Color(0xFF38BDF8),
+        duration: const Duration(milliseconds: 2000),
       );
       _advanceTimer?.cancel();
       _advanceTimer = Timer(const Duration(milliseconds: 1400), () {
@@ -208,9 +215,11 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   bool shouldShowNextButton(bool isSolved) => isSolved;
   void showPuzzleHint(String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 5)),
+    NeoToast.show(
+      context,
+      message,
+      icon: Icons.lightbulb_rounded,
+      color: const Color(0xFFFACC15),
     );
   }
 
@@ -234,47 +243,25 @@ mixin PracticeModeMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           });
         },
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: DropdownButton<String>(
-                value: difficulty,
-                isExpanded: true,
-                items: ['Easy', 'Medium', 'Hard']
-                    .map((d) => DropdownMenuItem(value: d, child: Text(d)))
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null ||
-                      value == difficulty ||
-                      _transitioning ||
-                      _finishing) {
-                    return;
-                  }
-                  _saveSession();
-                  _saveTimer?.cancel();
-                  _advanceTimer?.cancel();
-                  _generation++;
-                  _advanceReserved = false;
-                  ref
-                      .read(sharedPreferencesProvider)
-                      .setString('difficulty_$gameType', value);
-                  setState(() {
-                    difficulty = value;
-                    _finishing = false;
-                    onPracticeModeChanged(mode);
-                  });
-                },
-              ),
-            ),
-            TextButton.icon(
-              onPressed: nextPuzzle,
-              icon: const Icon(Icons.skip_next_rounded),
-              label: const Text('Next'),
-            ),
-          ],
-        ),
+      NeoDifficultyBar(
+        currentDifficulty: difficulty,
+        onDifficultyChanged: (value) {
+          if (value == difficulty || _transitioning || _finishing) return;
+          _saveSession();
+          _saveTimer?.cancel();
+          _advanceTimer?.cancel();
+          _generation++;
+          _advanceReserved = false;
+          ref
+              .read(sharedPreferencesProvider)
+              .setString('difficulty_$gameType', value);
+          setState(() {
+            difficulty = value;
+            _finishing = false;
+            onPracticeModeChanged(mode);
+          });
+        },
+        onNextPressed: nextPuzzle,
       ),
     ],
   );

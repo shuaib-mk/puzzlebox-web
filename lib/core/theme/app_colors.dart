@@ -1,67 +1,77 @@
 import 'package:flutter/material.dart';
 
 /// All named color tokens used throughout Puzzlebox.
-/// Dark-mode variants are prefixed with `dark`.
+/// Neo-Brutalism Theme Palette (inspired by Tuckii).
 abstract final class AppColors {
-  // ── Background ──────────────────────────────────────────────────────────
-  static const Color background = Color(0xFF121212); // Near-black
-  static const Color darkBackground = Color(0xFF121212);
+  // ── Canvas Background ──────────────────────────────────────────────────
+  static const Color background = Color(0xFF12131A); // Dark Obsidian
+  static const Color darkBackground = Color(0xFF12131A);
+  static const Color lightBackground = Color(0xFFF6F6F2); // Off-White Neo Canvas
 
-  static const Color surface = Color(0xFF1E1E1E); // Card/tile default
-  static const Color darkSurface = Color(0xFF1E1E1E);
+  static const Color surface = Color(0xFF1A1C26);
+  static const Color darkSurface = Color(0xFF1A1C26);
+  static const Color lightSurface = Color(0xFFFFFFFF);
 
-  static const Color surfaceVariant = Color(0xFF2A2A2A);
-  static const Color darkSurfaceVariant = Color(0xFF2A2A2A);
+  static const Color surfaceVariant = Color(0xFF242736);
+  static const Color darkSurfaceVariant = Color(0xFF242736);
+  static const Color lightSurfaceVariant = Color(0xFFEEEEEA);
 
-  static const Color border = Color(0xFF3A3A3A);
-  static const Color darkBorder = Color(0xFF3A3A3A);
+  static const Color border = Color(0xFF000000); // Pure Neo-Brutal Black Border
+  static const Color darkBorder = Color(0xFF000000);
+  static const Color lightBorder = Color(0xFF000000);
 
   // ── Text ────────────────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color darkTextPrimary = Color(0xFFFFFFFF);
+  static const Color textPrimary = Color(0xFFF8FAFC);
+  static const Color darkTextPrimary = Color(0xFFF8FAFC);
+  static const Color lightTextPrimary = Color(0xFF000000);
 
-  static const Color textSecondary = Color(0xFF9E9E9E);
-  static const Color darkTextSecondary = Color(0xFF9E9E9E);
+  static const Color textSecondary = Color(0xFF94A3B8);
+  static const Color darkTextSecondary = Color(0xFF94A3B8);
+  static const Color lightTextSecondary = Color(0xFF525252);
 
-  // ── Accent / Brand ──────────────────────────────────────────────────────
-  static const Color brand = Color(0xFF4A9EFF); // Electric Blue accent
-  static const Color brandLight = Color(0xFF64B5F6);
+  // ── Neo Accents ──────────────────────────────────────────────────────────
+  static const Color brand = Color(0xFFFACC15); // Neo Sunflower Yellow
+  static const Color brandLight = Color(0xFFFDE047);
+
+  // Folder Tab Color Palette
+  static const Color tabLime = Color(0xFF4ADE80);
+  static const Color tabPink = Color(0xFFF43F5E);
+  static const Color tabPurple = Color(0xFFC084FC);
+  static const Color tabCyan = Color(0xFF38BDF8);
+  static const Color tabYellow = Color(0xFFFACC15);
+  static const Color tabOrange = Color(0xFFFB923C);
 
   // ── Tile states (Daily Five) ─────────────────────────────────────────────
-  /// Correct letter, correct position (Forest Teal)
-  static const Color correct = Color(0xFF3AA981);
-  static const Color correctLight = Color(0xFF4ECB9B);
+  static const Color correct = Color(0xFF4ADE80);
+  static const Color correctLight = Color(0xFF86EFAC);
 
-  /// Letter in word, wrong position (Warm Amber)
-  static const Color present = Color(0xFFD9A441);
-  static const Color presentLight = Color(0xFFE4B558);
+  static const Color present = Color(0xFFFACC15);
+  static const Color presentLight = Color(0xFFFDE047);
 
-  /// Letter not in word (Dark Gray)
-  static const Color absent = Color(0xFF3A3A3A);
-  static const Color absentLight = Color(0xFF565656);
+  static const Color absent = Color(0xFF242736);
+  static const Color absentLight = Color(0xFFA3A3A3);
 
-  /// Empty tile (no letter yet)
   static const Color emptyTile = Colors.transparent;
-  static const Color emptyTileBorder = Color(0xFF3A3A3A);
-  static const Color darkEmptyTileBorder = Color(0xFF3A3A3A);
+  static const Color emptyTileBorder = Color(0xFF000000);
+  static const Color darkEmptyTileBorder = Color(0xFF000000);
+  static const Color lightEmptyTileBorder = Color(0xFF000000);
 
-  /// Filled but not yet submitted
-  static const Color filledTileBorder = Color(0xFF666666);
+  static const Color filledTileBorder = Color(0xFF000000);
 
   // ── Keyboard ────────────────────────────────────────────────────────────
-  static const Color keyDefault = Color(0xFF565656);
-  static const Color darkKeyDefault = Color(0xFF565656);
+  static const Color keyDefault = Color(0xFF242736);
+  static const Color darkKeyDefault = Color(0xFF242736);
+  static const Color lightKeyDefault = Color(0xFFE5E5E0);
 
   // ── Error / Danger ──────────────────────────────────────────────────────
-  static const Color error = Color(0xFFE55E5E);
-  static const Color errorBg = Color(0xFF3D1E1E);
+  static const Color error = Color(0xFFF43F5E);
+  static const Color errorBg = Color(0xFF451A1A);
 
   // ── Game card & Connections difficulty colors ────────────────────────────
-  static const Color difficultyEasy = Color(0xFFF9DF6D); // Yellow
-  static const Color difficultyMedium = Color(0xFFA0C35A); // Green
-  static const Color difficultyHard = Color(0xFFB0C4EF); // Blue
-  static const Color difficultyExpert = Color(0xFFBA81C5); // Purple
+  static const Color difficultyEasy = Color(0xFFFACC15); // Yellow
+  static const Color difficultyMedium = Color(0xFF4ADE80); // Lime Green
+  static const Color difficultyHard = Color(0xFF38BDF8); // Cyan
+  static const Color difficultyExpert = Color(0xFFC084FC); // Purple
 
-  // Spangram accent
-  static const Color spangram = Color(0xFFFFB74D);
+  static const Color spangram = Color(0xFFFACC15);
 }

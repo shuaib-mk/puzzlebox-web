@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chess/chess.dart' as chess_lib;
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/neo_toast.dart';
 import '../../core/services/practice_service.dart';
 import '../../core/services/stats_service.dart';
 import '../../core/widgets/pressable_scale.dart';
@@ -276,12 +277,12 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
         });
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Not the best move! Resetting board...'),
-          duration: Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
+      NeoToast.show(
+        context,
+        'Not the best move! Resetting board...',
+        icon: Icons.refresh_rounded,
+        color: const Color(0xFFF43F5E),
+        duration: const Duration(seconds: 2),
       );
       Future.delayed(const Duration(milliseconds: 600), () {
         if (mounted) setState(() => _loadPuzzle(_currentPuzzle));
@@ -399,6 +400,7 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AppScaffold(
       title: 'Chess',
@@ -406,40 +408,28 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Game Mode Switcher Chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SegmentedButton<ChessGameMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: ChessGameMode.dailyPuzzle,
-                    label: Text('Daily Puzzles'),
-                    icon: Icon(Icons.extension_outlined),
-                  ),
-                  ButtonSegment(
-                    value: ChessGameMode.vsAI,
-                    label: Text('Vs AI'),
-                    icon: Icon(Icons.smart_toy_outlined),
-                  ),
-                  ButtonSegment(
-                    value: ChessGameMode.passAndPlay,
-                    label: Text('Pass & Play'),
-                    icon: Icon(Icons.people_alt_outlined),
-                  ),
+            // Neo Game Mode Switcher
+            Container(
+              height: 44,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: Colors.black, width: 2.5),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
                 ],
-                selected: {_mode},
-                onSelectionChanged: (newSelection) {
-                  setState(() {
-                    _mode = newSelection.first;
-                    if (_mode == ChessGameMode.dailyPuzzle) {
-                      _startDailyPuzzle();
-                    } else if (_mode == ChessGameMode.vsAI) {
-                      _startVsAIGame();
-                    } else {
-                      _startPassAndPlayGame();
-                    }
-                  });
-                },
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildNeoModeTab('Daily Puzzles', ChessGameMode.dailyPuzzle, colors),
+                    _buildNeoModeTab('Vs AI', ChessGameMode.vsAI, colors),
+                    _buildNeoModeTab('Pass & Play', ChessGameMode.passAndPlay, colors),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -450,9 +440,12 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colors.secondaryContainer.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: colors.secondary.withValues(alpha: 0.2)),
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.black, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                  ],
                 ),
                 child: Column(
                   children: [
@@ -464,41 +457,59 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
                             'Puzzle #${_currentPuzzleIndex + 1}: ${_currentPuzzle.title}',
                             style: const TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: colors.primary.withValues(alpha: 0.15),
+                            color: colors.primary,
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black, width: 1.5),
                           ),
                           child: Text(
                             _currentPuzzle.difficulty,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: colors.primary,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Text(
                             _currentPuzzle.description,
-                            style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: colors.onSurfaceVariant,
+                            ),
                           ),
                         ),
-                        TextButton.icon(
-                          onPressed: () => setState(() => _startNextPuzzle()),
-                          icon: const Icon(Icons.skip_next_rounded, size: 18),
-                          label: const Text('Next ➔', style: TextStyle(fontSize: 12)),
+                        GestureDetector(
+                          onTap: () => setState(() => _startNextPuzzle()),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black, width: 1.5),
+                            ),
+                            child: const Row(
+                              children: [
+                                Text('Next', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.black)),
+                                SizedBox(width: 4),
+                                Icon(Icons.arrow_forward_rounded, size: 14, color: Colors.black),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -507,39 +518,52 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
               ),
 
             if (_mode == ChessGameMode.vsAI)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'AI Difficulty:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  DropdownButton<AIDifficulty>(
-                    value: _aiDifficulty,
-                    onChanged: (val) {
-                      if (val != null) {
-                        setState(() {
-                          _aiDifficulty = val;
-                          _startVsAIGame();
-                        });
-                      }
-                    },
-                    items: const [
-                      DropdownMenuItem(
-                        value: AIDifficulty.easy,
-                        child: Text('Easy (Novice)'),
-                      ),
-                      DropdownMenuItem(
-                        value: AIDifficulty.medium,
-                        child: Text('Medium (Club)'),
-                      ),
-                      DropdownMenuItem(
-                        value: AIDifficulty.hard,
-                        child: Text('Hard (Master)'),
-                      ),
-                    ],
-                  ),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'AI Difficulty:',
+                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+                    ),
+                    DropdownButton<AIDifficulty>(
+                      value: _aiDifficulty,
+                      underline: const SizedBox(),
+                      style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.black),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setState(() {
+                            _aiDifficulty = val;
+                            _startVsAIGame();
+                          });
+                        }
+                      },
+                      items: const [
+                        DropdownMenuItem(
+                          value: AIDifficulty.easy,
+                          child: Text('Easy (Novice)'),
+                        ),
+                        DropdownMenuItem(
+                          value: AIDifficulty.medium,
+                          child: Text('Medium (Club)'),
+                        ),
+                        DropdownMenuItem(
+                          value: AIDifficulty.hard,
+                          child: Text('Hard (Master)'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
 
             const SizedBox(height: 12),
@@ -547,11 +571,11 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
             // Captured pieces top tray
             Row(
               children: [
-                const Text('Captured: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                const Text('Captured: ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
                 Expanded(
                   child: Text(
                     _isFlipped ? _getCapturedWhiteText() : _getCapturedBlackText(),
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -572,11 +596,11 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
             // Captured pieces bottom tray
             Row(
               children: [
-                const Text('Captured: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                const Text('Captured: ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
                 Expanded(
                   child: Text(
                     _isFlipped ? _getCapturedBlackText() : _getCapturedWhiteText(),
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -588,56 +612,115 @@ class _ChessScreenState extends ConsumerState<ChessScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                PressableScale(
-                  child: IconButton.filledTonal(
-                    icon: const Icon(Icons.undo_rounded),
-                    tooltip: 'Undo Move',
-                    onPressed: _undoMove,
-                  ),
+                _buildNeoActionButton(
+                  icon: Icons.undo_rounded,
+                  tooltip: 'Undo Move',
+                  onPressed: _undoMove,
+                  colors: colors,
                 ),
-                PressableScale(
-                  child: IconButton.filledTonal(
-                    icon: const Icon(Icons.flip_camera_android_rounded),
-                    tooltip: 'Flip Board',
-                    onPressed: () => setState(() => _isFlipped = !_isFlipped),
-                  ),
+                _buildNeoActionButton(
+                  icon: Icons.flip_camera_android_rounded,
+                  tooltip: 'Flip Board',
+                  onPressed: () => setState(() => _isFlipped = !_isFlipped),
+                  colors: colors,
                 ),
-                PressableScale(
-                  child: IconButton.filledTonal(
-                    icon: const Icon(Icons.refresh_rounded),
-                    tooltip: 'Restart Puzzle',
-                    onPressed: () {
-                      setState(() {
-                        if (_mode == ChessGameMode.dailyPuzzle) {
-                          _loadPuzzle(_currentPuzzle);
-                        } else if (_mode == ChessGameMode.vsAI) {
-                          _startVsAIGame();
-                        } else {
-                          _startPassAndPlayGame();
-                        }
-                      });
-                    },
-                  ),
+                _buildNeoActionButton(
+                  icon: Icons.refresh_rounded,
+                  tooltip: 'Restart Puzzle',
+                  onPressed: () {
+                    setState(() {
+                      if (_mode == ChessGameMode.dailyPuzzle) {
+                        _loadPuzzle(_currentPuzzle);
+                      } else if (_mode == ChessGameMode.vsAI) {
+                        _startVsAIGame();
+                      } else {
+                        _startPassAndPlayGame();
+                      }
+                    });
+                  },
+                  colors: colors,
                 ),
                 if (_mode == ChessGameMode.dailyPuzzle)
-                  PressableScale(
-                    child: IconButton.filledTonal(
-                      icon: const Icon(Icons.lightbulb_outline_rounded),
-                      tooltip: 'Show Hint',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Hint: ${_currentPuzzle.hint}'),
-                            duration: const Duration(seconds: 4),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                    ),
+                  _buildNeoActionButton(
+                    icon: Icons.lightbulb_outline_rounded,
+                    tooltip: 'Show Hint',
+                    onPressed: () {
+                      NeoToast.show(
+                        context,
+                        'Hint: ${_currentPuzzle.hint}',
+                        icon: Icons.lightbulb_rounded,
+                        color: const Color(0xFFFACC15),
+                        duration: const Duration(seconds: 4),
+                      );
+                    },
+                    colors: colors,
                   ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNeoModeTab(String label, ChessGameMode targetMode, ColorScheme colors) {
+    final isSelected = _mode == targetMode;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _mode = targetMode;
+          if (_mode == ChessGameMode.dailyPuzzle) {
+            _startDailyPuzzle();
+          } else if (_mode == ChessGameMode.vsAI) {
+            _startVsAIGame();
+          } else {
+            _startPassAndPlayGame();
+          }
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected ? colors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(18),
+          border: isSelected ? Border.all(color: Colors.black, width: 1.5) : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: FontWeight.w900,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNeoActionButton({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+    required ColorScheme colors,
+  }) {
+    return PressableScale(
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: colors.primary,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.black, width: 2.2),
+          boxShadow: const [
+            BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+          ],
+        ),
+        child: IconButton(
+          icon: Icon(icon, color: Colors.black, size: 22),
+          tooltip: tooltip,
+          onPressed: onPressed,
         ),
       ),
     );

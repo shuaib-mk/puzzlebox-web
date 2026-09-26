@@ -141,10 +141,13 @@ void main() {
       i < 15 && PracticeService(prefs).getSolvedCount('strands') == 0;
       i++
     ) {
-      await tester.tap(find.byTooltip('In-App Hints'));
-      await tester.pump();
-      await tester.tap(find.text('Submit Word'));
-      await tester.pump();
+      await tester.tap(find.byTooltip('In-App Hints'), warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 100));
+      final submitFinder = find.text('Submit Word');
+      if (submitFinder.evaluate().isNotEmpty) {
+        await tester.tap(submitFinder, warnIfMissed: false);
+        await tester.pump(const Duration(milliseconds: 100));
+      }
     }
     await verifyWin(tester, prefs, 'strands');
   });

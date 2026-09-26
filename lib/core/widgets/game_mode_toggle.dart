@@ -16,24 +16,28 @@ class GameModeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        alignment: WrapAlignment.spaceBetween,
+        spacing: 12,
+        runSpacing: 10,
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          // Mode Segmented Buttons
+          // Mode Segmented Capsule
           Container(
-            height: 36,
-            padding: EdgeInsets.all(3),
+            height: 42,
+            padding: const EdgeInsets.all(3.5),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.outlineVariant,
-              ),
+              border: Border.all(color: Colors.black, width: 2.5),
+              boxShadow: const [
+                BoxShadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 0),
+              ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -55,25 +59,29 @@ class GameModeToggle extends StatelessWidget {
           // Practice Session Counter Badge
           if (mode == GameMode.practice)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.4),
-                ),
+                color: colors.primary,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.black, width: 2.0),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0),
+                ],
               ),
-              child: Text(
-                'Solved: $practiceSolvedCount',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.check_circle_rounded, size: 14, color: Colors.black),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Solved: $practiceSolvedCount',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],
@@ -95,26 +103,25 @@ class _ModeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 150),
-        padding: EdgeInsets.symmetric(horizontal: 14),
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Colors.transparent,
+          color: isSelected ? colors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
+          border: isSelected ? Border.all(color: Colors.black, width: 1.5) : null,
         ),
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isSelected
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.onSurfaceVariant,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w900,
+            color: Colors.black,
           ),
         ),
       ),

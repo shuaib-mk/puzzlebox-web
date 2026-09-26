@@ -106,6 +106,7 @@ class _CrosswordState extends ConsumerState<CrosswordScreen>
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final active = _entry.cells(_puzzle.size);
     return AppScaffold(
       title: widget.mini ? 'The Mini' : 'Crossword',
@@ -148,30 +149,58 @@ class _CrosswordState extends ConsumerState<CrosswordScreen>
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: DropdownButton<CrosswordEntry>(
-              value: _entry,
-              isExpanded: true,
-              items: _puzzle.entries
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(
-                        '${e.number}${e.across ? "A" : "D"}. ${e.clue} (${e.answer.length})',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (e) {
-                if (e != null) {
-                  setState(() {
-                    _entry = e;
-                    _selected = e.cells(_puzzle.size).first;
-                  });
-                }
-              },
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF1E293B)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.black, width: 2.2),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(2.5, 2.5), blurRadius: 0),
+                ],
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<CrosswordEntry>(
+                  value: _entry,
+                  isExpanded: true,
+                  dropdownColor: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF1E293B)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  icon: const Icon(Icons.arrow_drop_down_rounded, color: Colors.black),
+                  style: TextStyle(
+                    fontFamily: 'PuzzleSans',
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13.5,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  items: _puzzle.entries
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            '${e.number}${e.across ? "A" : "D"}. ${e.clue} (${e.answer.length})',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (e) {
+                    if (e != null) {
+                      setState(() {
+                        _entry = e;
+                        _selected = e.cells(_puzzle.size).first;
+                      });
+                    }
+                  },
+                ),
+              ),
             ),
           ),
           Expanded(
@@ -179,21 +208,32 @@ class _CrosswordState extends ConsumerState<CrosswordScreen>
               child: AspectRatio(
                 aspectRatio: _puzzle.size / (_letters.length ~/ _puzzle.size),
                 child: Padding(
-                  padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.black, width: 2.5),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
+                    ],
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  padding: const EdgeInsets.all(6),
                   child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: _letters.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: _puzzle.size,
-                      crossAxisSpacing: 2,
-                      mainAxisSpacing: 2,
+                      crossAxisSpacing: 3,
+                      mainAxisSpacing: 3,
                     ),
                     itemBuilder: (context, i) {
                       if (_puzzle.solution[i] == '#') {
                         return DecoratedBox(
                           decoration: BoxDecoration(
-                            color: colors.onSurface.withValues(alpha: .12),
-                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         );
                       }
@@ -218,17 +258,18 @@ class _CrosswordState extends ConsumerState<CrosswordScreen>
                           _selected = i;
                         }),
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 160),
+                          duration: const Duration(milliseconds: 150),
                           decoration: BoxDecoration(
                             color: i == _selected
-                                ? colors.primaryContainer
+                                ? colors.primary
                                 : active.contains(i)
-                                ? colors.secondaryContainer
-                                : colors.surface,
+                                    ? colors.primary.withValues(alpha: 0.35)
+                                    : (isDark ? const Color(0xFF1E293B) : Colors.white),
                             border: Border.all(
-                              color: wrong ? colors.error : colors.outline,
+                              color: wrong ? colors.error : Colors.black,
+                              width: wrong ? 2.0 : 1.5,
                             ),
-                            borderRadius: BorderRadius.circular(3),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Stack(
                             children: [
@@ -262,6 +303,7 @@ class _CrosswordState extends ConsumerState<CrosswordScreen>
               ),
             ),
           ),
+        ),
           for (final row in ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'])
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
