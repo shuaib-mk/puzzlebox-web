@@ -61,6 +61,11 @@ class _DailyFiveScreenState extends ConsumerState<DailyFiveScreen> {
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
+        if (game.phase == GamePhase.won) {
+          AppFeedbackService.victory(ref);
+        } else {
+          AppFeedbackService.error(ref);
+        }
         NeoToast.show(
           context,
           game.phase == GamePhase.won

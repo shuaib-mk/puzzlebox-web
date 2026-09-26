@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/models/game_stats.dart';
 import '../../../core/providers/settings_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/game_mode_toggle.dart';
+import '../../../core/widgets/neo_toast.dart';
 import '../models/daily_five_state.dart';
 import '../providers/daily_five_provider.dart';
 
@@ -109,14 +111,23 @@ class ResultModal extends ConsumerWidget {
                     ),
                     icon: const Icon(Icons.share_rounded, size: 18),
                     label: const Text('Share Result', style: TextStyle(fontWeight: FontWeight.w900)),
-                    onPressed: !game.isComplete
-                        ? null
-                        : () {
-                            final text = ref
-                                .read(dailyFiveProvider(mode).notifier)
-                                .buildShareString();
-                            Share.share(text);
-                          },
+                    onPressed: () async {
+                      final text = ref
+                          .read(dailyFiveProvider(mode).notifier)
+                          .buildShareString();
+                      await Clipboard.setData(ClipboardData(text: text));
+                      try {
+                        await Share.share(text);
+                      } catch (_) {}
+                      if (context.mounted) {
+                        NeoToast.show(
+                          context,
+                          'Result copied to clipboard!',
+                          icon: Icons.check_circle_rounded,
+                          color: const Color(0xFF4ADE80),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],

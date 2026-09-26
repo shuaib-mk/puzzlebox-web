@@ -58,7 +58,8 @@ class MainActivity : FlutterActivity() {
 
     private fun vibrateOneShot(vibrator: Vibrator, ms: Long, amplitude: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(ms, amplitude))
+            val amp = if (vibrator.hasAmplitudeControl()) amplitude else VibrationEffect.DEFAULT_AMPLITUDE
+            vibrator.vibrate(VibrationEffect.createOneShot(ms, amp))
         } else {
             @Suppress("DEPRECATION")
             vibrator.vibrate(ms)
@@ -67,7 +68,11 @@ class MainActivity : FlutterActivity() {
 
     private fun vibrateWaveform(vibrator: Vibrator, timings: LongArray, amplitudes: IntArray) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+            if (vibrator.hasAmplitudeControl()) {
+                vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+            } else {
+                vibrator.vibrate(VibrationEffect.createWaveform(timings, -1))
+            }
         } else {
             @Suppress("DEPRECATION")
             vibrator.vibrate(timings, -1)

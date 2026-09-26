@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import '../core/services/stats_service.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../core/services/practice_service.dart';
 import '../core/services/engagement_service.dart';
 import '../core/providers/settings_provider.dart';
 import '../core/theme/app_theme.dart';
+import '../core/widgets/neo_toast.dart';
 
 class UnifiedStatsScreen extends ConsumerWidget {
   final bool embedded;
@@ -61,38 +64,72 @@ class UnifiedStatsScreen extends ConsumerWidget {
                 child: const Icon(Icons.bar_chart_rounded, color: Colors.black, size: 24),
               ),
               const SizedBox(width: 14),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Your Progress',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -.6,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Your Progress',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -.6,
+                      ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.local_fire_department_rounded,
-                        size: 15,
-                        color: engagement.currentStreak > 0 ? const Color(0xFFF97316) : colors.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        engagement.currentStreak == 0
-                            ? 'Solve a puzzle today to start your streak.'
-                            : '${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          color: colors.onSurfaceVariant,
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.local_fire_department_rounded,
+                          size: 15,
+                          color: engagement.currentStreak > 0 ? const Color(0xFFF97316) : colors.onSurfaceVariant,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(width: 4),
+                        Text(
+                          engagement.currentStreak == 0
+                              ? 'Solve a puzzle today to start your streak.'
+                              : '${engagement.currentStreak} day streak · Best ${engagement.bestStreak}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                style: IconButton.styleFrom(
+                  backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  side: const BorderSide(color: Colors.black, width: 2),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: const Icon(Icons.share_rounded, size: 20, color: Colors.black),
+                tooltip: 'Share Statistics',
+                onPressed: () async {
+                  final text = '''
+Puzzlebox Statistics 🧩
+• Completed Puzzles: ${engagement.totalCompleted}
+• Current Streak: ${engagement.currentStreak} Days 🔥
+• Best Streak: ${engagement.bestStreak} Days 🏆
+• Total Play Time: ${_time(engagement.totalSeconds)} ⏱️
+
+https://github.com/Sinxn-coder/puzzlebox
+'''.trim();
+                  await Clipboard.setData(ClipboardData(text: text));
+                  try {
+                    await Share.share(text);
+                  } catch (_) {}
+                  if (context.mounted) {
+                    NeoToast.show(
+                      context,
+                      'Statistics copied to clipboard!',
+                      icon: Icons.check_circle_rounded,
+                      color: const Color(0xFF4ADE80),
+                    );
+                  }
+                },
               ),
             ],
           ),

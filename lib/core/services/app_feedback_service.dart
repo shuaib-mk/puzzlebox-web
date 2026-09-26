@@ -48,6 +48,10 @@ abstract final class AppFeedbackService {
     if (_isEnabled(refOrContext)) {
       _nativeVibrate('victory');
       await HapticFeedback.heavyImpact();
+      await Future.delayed(const Duration(milliseconds: 100));
+      await HapticFeedback.vibrate();
+      await Future.delayed(const Duration(milliseconds: 150));
+      await HapticFeedback.heavyImpact();
       _callJSVibrate([120, 60, 150, 60, 220]);
     }
   }
