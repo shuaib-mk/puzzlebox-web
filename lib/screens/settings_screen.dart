@@ -198,42 +198,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 28),
 
-          const _Label('LEGAL & PRIVACY'),
-          const SizedBox(height: 12),
-          Container(
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.black, width: 2.5),
-              boxShadow: const [
-                BoxShadow(color: Colors.black, offset: Offset(3.5, 3.5), blurRadius: 0),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                trailing: Icon(Icons.open_in_new_rounded, size: 20, color: isDark ? Colors.white : Colors.black),
-                onTap: () async {
-                  final uri = Uri.parse('https://puzzlebox.q04ti.dev/#privacy-policy');
-                  if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && context.mounted) {
-                    await Clipboard.setData(const ClipboardData(text: 'https://puzzlebox.q04ti.dev/#privacy-policy'));
-                    if (context.mounted) {
-                      NeoToast.show(
-                        context,
-                        'Link copied to clipboard',
-                        icon: Icons.link_rounded,
-                        color: const Color(0xFF38BDF8),
-                      );
-                    }
-                  }
-                },
-              ),
-            ),
-          ),
         ],
       ),
     );

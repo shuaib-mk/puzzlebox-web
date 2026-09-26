@@ -64,7 +64,7 @@ class AboutScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            'Version 2.4.0 • Build 8',
+            'Version 3.0.0 • Build 10',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -247,14 +247,11 @@ class AboutScreen extends ConsumerWidget {
                   ),
                   const Divider(color: Colors.black, thickness: 2, height: 1),
                   ListTile(
-                    leading: Icon(Icons.description_outlined, color: isDark ? Colors.white : Colors.black),
-                    title: const Text('Open Source Licenses', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                    onTap: () => showLicensePage(
-                      context: context,
-                      applicationName: 'Puzzlebox',
-                      applicationVersion: '2.4.0',
-                      applicationLegalese: 'Puzzlebox © 2026 q04ti.',
-                    ),
+                    leading: Icon(Icons.policy_outlined, color: isDark ? Colors.white : Colors.black),
+                    title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                    subtitle: const Text('Official hosted privacy policy', style: TextStyle(fontWeight: FontWeight.w600)),
+                    trailing: Icon(Icons.open_in_new_rounded, size: 18, color: isDark ? Colors.white : Colors.black),
+                    onTap: () => _open(context, 'https://puzzlebox.q04ti.dev/#privacy-policy'),
                   ),
                 ],
               ),
