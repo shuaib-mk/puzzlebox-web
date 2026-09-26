@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/date_service.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
@@ -141,6 +142,7 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
 
   void _onWordTap(String word) {
     if (_isGameOver) return;
+    AppFeedbackService.tap(ref);
     setState(() {
       if (_selectedWords.contains(word)) {
         _selectedWords.remove(word);
@@ -153,12 +155,14 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
   }
 
   void _shuffle() {
+    AppFeedbackService.tap(ref);
     setState(() {
       _remainingWords.shuffle();
     });
   }
 
   void _deselectAll() {
+    AppFeedbackService.tap(ref);
     setState(() {
       _selectedWords.clear();
     });
@@ -169,6 +173,7 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
 
     final guess = (_selectedWords.toList()..sort()).join('|');
     if (!_previousGuesses.add(guess)) {
+      AppFeedbackService.error(ref);
       showPuzzleHint(
         'You already tried that group. Choose a different combination.',
       );
@@ -191,8 +196,12 @@ class _ConnectionsScreenState extends ConsumerState<ConnectionsScreen>
         if (_solvedCategories.length == 4) {
           _isGameOver = true;
           _recordWin();
+          AppFeedbackService.victory(ref);
+        } else {
+          AppFeedbackService.tap(ref);
         }
       } else {
+        AppFeedbackService.error(ref);
         _mistakesRemaining--;
         if (_mistakesRemaining == 0) {
           _isGameOver = true;

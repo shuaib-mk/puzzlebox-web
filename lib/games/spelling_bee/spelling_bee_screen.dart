@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
 import '../../core/widgets/neo_toast.dart';
@@ -89,12 +90,14 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
 
   void _addLetter(String letter) {
     if (_isGameComplete || _currentInput.length >= 24) return;
+    AppFeedbackService.tap(ref);
     setState(() {
       _currentInput += letter;
     });
   }
 
   void _delete() {
+    AppFeedbackService.tap(ref);
     if (_currentInput.isNotEmpty) {
       setState(() {
         _currentInput = _currentInput.substring(0, _currentInput.length - 1);
@@ -103,6 +106,7 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
   }
 
   void _shuffle() {
+    AppFeedbackService.tap(ref);
     setState(() {
       _outerLetters.shuffle();
     });
@@ -111,15 +115,18 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
   void _submit() {
     if (_isGameComplete) return;
     if (_currentInput.length < 4) {
+      AppFeedbackService.error(ref);
       _showToast('Too short');
       return;
     }
     if (!_currentInput.contains(_centerLetter)) {
+      AppFeedbackService.error(ref);
       _showToast('Missing center letter');
       return;
     }
 
     if (_foundWords.contains(_currentInput)) {
+      AppFeedbackService.error(ref);
       _showToast('Already found');
       return;
     }
@@ -130,6 +137,7 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
             ? (_currentInput.length == 4 ? 1 : _currentInput.length)
             : 0);
     if (points > 0) {
+      AppFeedbackService.victory(ref);
       final isPangram =
           _outerLetters.every((l) => _currentInput.contains(l)) &&
           _currentInput.contains(_centerLetter);
@@ -147,6 +155,7 @@ class _SpellingBeeScreenState extends ConsumerState<SpellingBeeScreen>
         _completeGame();
       }
     } else {
+      AppFeedbackService.error(ref);
       _showToast('Not in word list');
     }
   }

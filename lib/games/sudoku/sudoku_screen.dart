@@ -4,6 +4,7 @@ import 'sudoku_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
@@ -160,6 +161,7 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
   void _onNumberTap(int num) {
     if (_initialGrid[_selectedRow][_selectedCol] != 0 || _isSolved) return;
     if (_pencilMode && _userGrid[_selectedRow][_selectedCol] != 0) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       if (_pencilMode) {
@@ -187,6 +189,7 @@ class _SudokuScreenState extends ConsumerState<SudokuScreen>
 
   void _erase() {
     if (_initialGrid[_selectedRow][_selectedCol] != 0 || _isSolved) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       _userGrid[_selectedRow][_selectedCol] = 0;

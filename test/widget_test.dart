@@ -38,7 +38,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.textContaining('My Puzzles'), findsOneWidget);
-    expect(find.textContaining('Daily Five'), findsWidgets);
+    expect(find.textContaining('Chess'), findsWidgets);
   });
   final screens = <String, Widget>{
     'daily_five': const DailyFiveScreen(),

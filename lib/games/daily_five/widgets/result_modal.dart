@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/models/game_stats.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/providers/settings_provider.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/game_mode_toggle.dart';
 import '../models/daily_five_state.dart';
 import '../providers/daily_five_provider.dart';
@@ -17,24 +18,20 @@ class ResultModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(dailyFiveProvider(mode));
     final stats = ref.watch(dailyFiveStatsProvider);
+    final settings = ref.watch(settingsProvider);
     final won = game.phase == GamePhase.won;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textTheme = Theme.of(context).textTheme;
+    final accentColor = AppTheme.getAccentColor(const Color(0xFFFACC15), settings.palette);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 24),
-      padding: EdgeInsets.all(24),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark
-            ? Theme.of(context).colorScheme.surfaceContainerLow
-            : Theme.of(context).colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 24,
-            offset: Offset(0, 8),
-          ),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black, width: 2.5),
+        boxShadow: const [
+          BoxShadow(color: Colors.black, offset: Offset(4, 4), blurRadius: 0),
         ],
       ),
       child: SingleChildScrollView(
@@ -46,66 +43,94 @@ class ResultModal extends ConsumerWidget {
               game.isComplete
                   ? (won ? 'Brilliant!' : 'Another word awaits')
                   : 'Daily Five statistics',
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: isDark ? Colors.white : Colors.black,
               ),
               textAlign: TextAlign.center,
             ),
             if (game.phase == GamePhase.lost) ...[
-              SizedBox(height: 6),
+              const SizedBox(height: 6),
               Text(
-                'The word was ${game.answer}',
-                style: textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
+                'The word was ${game.answer.toUpperCase()}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFFF43F5E),
                 ),
               ),
             ],
-            SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // ── Stats Row ────────────────────────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _StatChip(label: 'Played', value: '${stats.gamesPlayed}'),
+                _StatChip(label: 'Played', value: '${stats.gamesPlayed}', accentColor: accentColor),
                 _StatChip(
                   label: 'Win %',
-                  value: '${stats.winPercentage.round()}',
+                  value: '${stats.winPercentage.round()}%',
+                  accentColor: accentColor,
                 ),
                 _StatChip(
                   label: 'Streak',
                   value: '${stats.currentStreak}',
                   icon: stats.currentStreak > 0 ? '🔥' : null,
+                  accentColor: accentColor,
                 ),
-                _StatChip(label: 'Best', value: '${stats.maxStreak}'),
+                _StatChip(label: 'Best', value: '${stats.maxStreak}', accentColor: accentColor),
               ],
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // ── Distribution ─────────────────────────────────────────────
             _DistributionChart(
               stats: stats,
               lastGuess: won ? game.currentRow : null,
+              accentColor: accentColor,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // ── Actions ──────────────────────────────────────────────────
-            OutlinedButton.icon(
-              icon: Icon(Icons.share_rounded, size: 20),
-              label: Text('Share Result'),
-              onPressed: !game.isComplete
-                  ? null
-                  : () {
-                      final text = ref
-                          .read(dailyFiveProvider(mode).notifier)
-                          .buildShareString();
-                      Share.share(text);
-                    },
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentColor,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(color: Colors.black, width: 2),
+                      ),
+                    ),
+                    icon: const Icon(Icons.share_rounded, size: 18),
+                    label: const Text('Share Result', style: TextStyle(fontWeight: FontWeight.w900)),
+                    onPressed: !game.isComplete
+                        ? null
+                        : () {
+                            final text = ref
+                                .read(dailyFiveProvider(mode).notifier)
+                                .buildShareString();
+                            Share.share(text);
+                          },
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Close'),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
+              ),
             ),
           ],
         ),
@@ -118,33 +143,43 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String value;
   final String? icon;
+  final Color accentColor;
 
-  const _StatChip({required this.label, required this.value, this.icon});
+  const _StatChip({
+    required this.label,
+    required this.value,
+    this.icon,
+    required this.accentColor,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Text(icon!, style: TextStyle(fontSize: 18)),
-              SizedBox(width: 2),
+              Text(icon!, style: const TextStyle(fontSize: 16)),
+              const SizedBox(width: 2),
             ],
             Text(
               value,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: isDark ? Colors.white : Colors.black,
+              ),
             ),
           ],
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF525252),
           ),
         ),
       ],
@@ -154,70 +189,81 @@ class _StatChip extends StatelessWidget {
 
 class _DistributionChart extends StatelessWidget {
   final GameStats stats;
-  final int? lastGuess; // highlight this row
+  final int? lastGuess;
+  final Color accentColor;
 
-  const _DistributionChart({required this.stats, this.lastGuess});
+  const _DistributionChart({
+    required this.stats,
+    this.lastGuess,
+    required this.accentColor,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final maxVal = stats.distribution.values.fold(0, (a, b) => a > b ? a : b);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Guess Distribution',
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
+          'GUESS DISTRIBUTION',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.0,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 10),
         ...List.generate(DailyFiveState.maxGuesses, (i) {
           final count = stats.distribution[i + 1] ?? 0;
           final isHighlight = lastGuess == i + 1;
           final fraction = maxVal == 0 ? 0.0 : count / maxVal;
           return Padding(
-            padding: EdgeInsets.only(bottom: 4),
+            padding: const EdgeInsets.only(bottom: 6),
             child: Row(
               children: [
                 SizedBox(
-                  width: 16,
+                  width: 18,
                   child: Text(
                     '${i + 1}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final barWidth = (fraction * constraints.maxWidth).clamp(
-                        28.0,
+                        32.0,
                         constraints.maxWidth,
                       );
                       return AnimatedContainer(
-                        duration: Duration(milliseconds: 600),
+                        duration: const Duration(milliseconds: 400),
                         curve: Curves.easeOut,
                         width: barWidth,
-                        height: 22,
+                        height: 24,
                         decoration: BoxDecoration(
                           color: isHighlight
-                              ? AppColors.correct
-                              : AppColors.absentLight,
-                          borderRadius: BorderRadius.circular(4),
+                              ? const Color(0xFF4ADE80)
+                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: Colors.black, width: 1.5),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
                               '$count',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
+                              style: const TextStyle(
+                                color: Colors.black,
                                 fontSize: 12,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
                           ),

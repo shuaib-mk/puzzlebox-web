@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'binary_generator.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
@@ -76,6 +77,7 @@ class _BinaryScreenState extends ConsumerState<BinaryScreen>
   void _onCellTap(int index) {
     final puzzle = _puzzle;
     if (_isSolved || puzzle == null || puzzle.givens[index] != -1) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       _user[index] = _user[index] == -1 ? 0 : (_user[index] == 0 ? 1 : -1);

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'cages_generator.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/stats_service.dart';
+import '../../core/services/app_feedback_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/game_mode_toggle.dart';
 import '../../core/mixins/practice_mode_mixin.dart';
@@ -96,11 +97,13 @@ class _CagesScreenState extends ConsumerState<CagesScreen>
 
   void _onCellTap(int index) {
     if (_isSolved) return;
+    AppFeedbackService.tap(ref);
     setState(() => _selected = index);
   }
 
   void _onNumberTap(int value) {
     if (_isSolved || _selected == null) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() {
       _user[_selected!] = _user[_selected!] == value ? 0 : value;
@@ -110,6 +113,7 @@ class _CagesScreenState extends ConsumerState<CagesScreen>
 
   void _erase() {
     if (_isSolved || _selected == null || _user[_selected!] == 0) return;
+    AppFeedbackService.tap(ref);
     _remember();
     setState(() => _user[_selected!] = 0);
   }
