@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzlebox - Suggest a Game</title>
+  <meta name="description" content="Suggest a new logic or word game to be added to Puzzlebox.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <img src="assets/puzzlebox-logo.svg" alt="Puzzlebox Logo" style="width: 28px; height: 28px;">
+      Puzzlebox
+    </a>
+    <nav>
+      <a href="index.html">Overview</a>
+      <a href="games.html">15 Games</a>
+      <a href="suggest.html" class="active">Suggest a Game</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="https://q04ti.dev" target="_blank" class="developer-link">By q04ti</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="suggest-section">
+      <div class="suggest-content">
+        <h1>Help Shape Puzzlebox</h1>
+        <p>We built Puzzlebox to be the ultimate offline collection, but we're not done yet. Did we miss your favorite logic puzzle? Do you have an idea for a completely new word game?</p>
+        
+        <div class="criteria-box">
+          <h3>What makes a good fit?</h3>
+          <ul class="criteria-list">
+            <li>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              100% Offline Playable
+            </li>
+            <li>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              No reflexes or timing required
+            </li>
+            <li>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Can be procedurally generated
+            </li>
+            <li>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Clean, minimalist ruleset
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-wrapper suggest-form-wrapper">
+        <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">Drop your idea</h2>
+        <p style="color: var(--text-secondary); font-weight: 700; margin-bottom: 2rem;">We review every single submission.</p>
+        
+        <form onsubmit="event.preventDefault(); alert('Thanks for your suggestion!'); this.reset();">
+          <div class="form-group">
+            <label for="gameName">Game Name / Type</label>
+            <input type="text" id="gameName" class="form-control" placeholder="e.g. Kakuro or Mastermind" required>
+          </div>
+          <div class="form-group">
+            <label for="description">Why would it fit in Puzzlebox?</label>
+            <textarea id="description" class="form-control" placeholder="Explain the rules or why you love it..." style="min-height: 180px; resize: vertical;" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%;">Submit Suggestion</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <div class="footer-col footer-brand" style="flex: 1 1 250px; margin-bottom: 2rem;">
+        <a href="#" class="logo" style="display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.5rem; color: #000; text-decoration: none; margin-bottom: 0.5rem;">
+          <img src="assets/puzzlebox-logo.svg" alt="Puzzlebox Logo" style="width: 32px; height: 32px;">
+          Puzzlebox
+        </a>
+        <p style="color: var(--text-secondary); font-weight: 700;">The ultimate offline puzzle collection. Train your brain anywhere, anytime.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.etriq.puzzlebox">Download</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="https://q04ti.dev">About q04ti</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Social</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">X (Twitter)</a></li>
+          <li><a href="https://github.com/etriq/puzzlebox">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Puzzlebox. All rights reserved. <br><span style="font-size: 0.8rem; margin-top: 5px; display: inline-block; color: var(--text-secondary); opacity: 0.7;">v1.2.0 &bull; com.etriq.puzzlebox</span></p>
+    </div>
+  </footer>
+</body>
+</html>

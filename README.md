@@ -3,11 +3,11 @@
 Official website and Google Play Privacy Policy portal for **Puzzlebox**, created and maintained by independent developer [q04ti](https://q04ti.dev).
 
 ## Features
-- **Official Privacy Policy & Data Safety Notice**: Comprehensive, fully verified disclosure covering zero data collection, 100% local device storage, permissions audit, COPPA & Family Policy compliance, and deletion instructions.
-- **14 Offline Games Showcase**: Word, logic, number, and pattern puzzle catalog with instant search & filter.
-- **Dark & Light Mode**: Seamless theme switching with system preference detection and local storage persistence.
-- **Game Request Portal**: Built-in AJAX suggestion form routing directly to the developer's inbox.
-- **Production-Ready for Vercel**: Configured with security headers (`Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`, `Permissions-Policy`) and clean URLs.
+- **Redesigned Neo-Brutalist Layout**: Dynamic multi-color cycle animations, high-contrast borders, tactile drop shadows, and responsive stacked mockups.
+- **Official Privacy Policy & Data Safety Notice**: Verified Google Play disclosure covering offline execution, 100% local device storage, zero third-party telemetry/ads, and zero sensitive permissions.
+- **15 Offline Games Showcase**: Catalog highlighting Chess, Sudoku, Daily Five, Connections, The Mini, Spelling Bee, Crossword, Strands, Pips, Tiles, Letter Boxed, Vertex, Nonogram, Binary, and Cages.
+- **Game Request Portal**: Built-in suggestion form allowing players to drop ideas for upcoming updates.
+- **Optimized for Vercel**: Clean URLs configuration (`cleanUrls: true`) and full HTTP security headers.
 
 ## Deploying to Vercel
 1. Log in to [Vercel](https://vercel.com) and click **Add New > Project**.
