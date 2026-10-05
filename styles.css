@@ -480,6 +480,7 @@ main { flex: 1; padding-top: 80px; }
 .comparison-cards {
   display: flex;
   justify-content: center;
+  align-items: stretch;
   gap: 2rem;
   flex-wrap: wrap;
 }
@@ -496,10 +497,9 @@ main { flex: 1; padding-top: 80px; }
 .typical-card {
   background: #E5E7EB;
   color: #6B7280;
-  transform: translateY(20px);
 }
 .typical-card:hover {
-  transform: translateY(15px);
+  transform: translateY(-8px);
 }
 .puzzlebox-card {
   background: var(--primary);
