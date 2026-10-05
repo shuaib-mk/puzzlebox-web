@@ -32,6 +32,12 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-color);
@@ -39,6 +45,10 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.mobile-menu-btn {
+  display: none;
 }
 
 /* Header */
@@ -910,8 +920,338 @@ footer {
   font-weight: 700;
 }
 
+@keyframes slideDownNav {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
-  .hero { flex-direction: column; text-align: center; }
-  .cta-group { justify-content: center; }
-  nav { display: none; }
+  /* Header & Navigation */
+  header {
+    padding: 1rem 5%;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    background: var(--surface-high);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 2px 2px 0px #000;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .mobile-menu-btn span {
+    display: block;
+    width: 20px;
+    height: 3px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .mobile-menu-btn.open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .mobile-menu-btn.open span:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-menu-btn.open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-bottom: var(--border-width) solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 5% 1.5rem;
+    gap: 0.5rem;
+    z-index: 999;
+  }
+  nav.mobile-active {
+    display: flex;
+    animation: slideDownNav 0.2s ease-out;
+  }
+  nav a {
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border: 2px solid transparent;
+  }
+  nav a:hover, nav a.active {
+    background: var(--surface-high);
+    border-color: var(--border-color);
+  }
+  .developer-link {
+    text-align: center;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  /* Main & Layout */
+  main {
+    padding-top: 2rem;
+  }
+
+  /* Hero Section */
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem 5% 3rem;
+    min-height: auto;
+    gap: 3rem;
+  }
+  .hero-text {
+    width: 100%;
+  }
+  .hero-text h1 {
+    font-size: clamp(2.2rem, 8.5vw, 3.2rem);
+    letter-spacing: -0.5px;
+  }
+  .hero p {
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+  }
+  .cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    font-size: 1.05rem;
+  }
+
+  /* Mockup Stack: constrained & safe on mobile */
+  .hero-visual {
+    width: 100%;
+    max-width: 290px;
+    height: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+  }
+  .stacked-mockup {
+    width: 260px;
+    border-radius: 24px;
+    box-shadow: 6px 6px 0px #000;
+  }
+
+  /* Trust Bar */
+  .trust-bar {
+    padding: 1rem 0;
+    font-size: 0.95rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Features */
+  .features {
+    min-height: auto;
+    padding: 3rem 0;
+  }
+  .features-container {
+    grid-template-columns: 1fr;
+    padding: 0 5%;
+    gap: 1.5rem;
+  }
+  .feature-card {
+    padding: 2rem 1.5rem;
+    border-radius: 18px;
+  }
+
+  /* How it works */
+  .how-it-works {
+    padding: 3rem 0;
+  }
+  .how-container {
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 0 5%;
+  }
+  .how-steps h2 {
+    font-size: clamp(2rem, 7vw, 2.5rem);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .step {
+    margin-bottom: 1.75rem;
+  }
+  .step-number {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+  }
+  .how-mockup {
+    width: min(260px, 80vw);
+    border-radius: 24px;
+    margin: 0 auto;
+    transform: rotate(0deg);
+  }
+
+  /* Showcase */
+  .showcase {
+    padding: 3rem 0;
+  }
+  .showcase-header, .games-header {
+    margin-bottom: 2.5rem;
+  }
+  .showcase-header h2, .games-header h1 {
+    font-size: clamp(2rem, 7vw, 2.5rem);
+  }
+  .showcase-gallery {
+    gap: 1.5rem;
+    padding: 1rem 5% 2rem;
+  }
+  .showcase-item {
+    width: 100%;
+    max-width: 280px;
+    transform: none !important;
+  }
+
+  /* Comparison Section */
+  .comparison-section {
+    padding: 3rem 0;
+  }
+  .comparison-header h2 {
+    font-size: clamp(2rem, 7vw, 2.5rem);
+  }
+  .comparison-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 5%;
+  }
+  .comp-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 440px;
+    padding: 2rem 1.5rem;
+    border-radius: 18px;
+  }
+  .comp-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1.75rem;
+  }
+  .comp-list li {
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* FAQ */
+  .faq-section {
+    padding: 3rem 5%;
+  }
+  .faq-header h2 {
+    font-size: clamp(2rem, 7vw, 2.5rem);
+    margin-bottom: 2.5rem;
+  }
+  .faq-item summary {
+    padding: 1.25rem;
+    font-size: 1.15rem;
+  }
+  .faq-content {
+    padding: 1.25rem;
+    font-size: 1rem;
+  }
+
+  /* Final CTA: eliminate 800px mockup overflow */
+  .final-cta {
+    padding: 4rem 5% 0;
+  }
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 8vw, 3rem);
+  }
+  .final-cta p {
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+  }
+  .final-mockup-wrapper {
+    max-width: 260px;
+    margin-top: 1rem;
+  }
+  .mockup-left, .mockup-right {
+    display: none;
+  }
+  .mockup-center {
+    width: 100%;
+    transform: none;
+    border-radius: 24px;
+  }
+
+  /* Games Catalog Grid */
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 0 5%;
+  }
+  .game-card {
+    padding: 1.5rem;
+  }
+
+  /* Suggest & Policy pages */
+  .suggest-section {
+    padding: 2.5rem 5%;
+    gap: 2.5rem;
+  }
+  .suggest-content h1 {
+    font-size: clamp(2rem, 7vw, 2.8rem);
+  }
+  .criteria-box {
+    padding: 1.5rem;
+  }
+  .form-wrapper, .policy-wrapper {
+    padding: 2rem 1.25rem;
+    border-radius: 18px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 2.5rem 5% 1.5rem;
+  }
+  .footer-links {
+    gap: 1.5rem;
+  }
+  .footer-col {
+    flex: 1 1 130px;
+  }
+  .footer-col.footer-brand {
+    flex: 1 1 100%;
+  }
+}
+
+/* Extra small devices (<= 400px) */
+@media (max-width: 400px) {
+  header {
+    padding: 0.85rem 4%;
+  }
+  .logo {
+    font-size: 1.3rem;
+  }
+  .hero-visual {
+    max-width: 250px;
+    height: 420px;
+  }
+  .stacked-mockup {
+    width: 230px;
+    border-radius: 20px;
+  }
+  .form-wrapper, .policy-wrapper, .comp-card {
+    padding: 1.5rem 1rem;
+  }
 }
