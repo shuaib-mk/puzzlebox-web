@@ -1,60 +1,23 @@
-# Puzzlebox
+# Puzzlebox — Official Website & Privacy Portal
 
-A collection of 15 hand-crafted word and logic puzzle games for Android, built by independent developer [q04ti](https://q04ti.dev).
+Official website and Google Play Privacy Policy portal for **Puzzlebox**, created and maintained by independent developer [q04ti](https://q04ti.dev).
 
-Everything is 100% free, offline, and ad-free. No accounts, no subscriptions, no energy meters, and no microtransactions.
+## Features
+- **Official Privacy Policy & Data Safety Notice**: Comprehensive, fully verified disclosure covering zero data collection, 100% local device storage, permissions audit, COPPA & Family Policy compliance, and deletion instructions.
+- **14 Offline Games Showcase**: Word, logic, number, and pattern puzzle catalog with instant search & filter.
+- **Dark & Light Mode**: Seamless theme switching with system preference detection and local storage persistence.
+- **Game Request Portal**: Built-in AJAX suggestion form routing directly to the developer's inbox.
+- **Production-Ready for Vercel**: Configured with security headers (`Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`, `Permissions-Policy`) and clean URLs.
 
----
+## Deploying to Vercel
+1. Log in to [Vercel](https://vercel.com) and click **Add New > Project**.
+2. Import the `shuaib-mk/puzzleboxx` repository.
+3. Framework Preset: **Other** (Static HTML).
+4. Root Directory: `./` (default).
+5. Click **Deploy**.
 
-## Download for Android
-
-* **[Download Latest APK (Universal)](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox.apk)** - Works on all Android devices
-* **[Download Lite APK](https://github.com/Sinxn-coder/puzzlebox/releases/latest/download/puzzlebox-lite.apk)** - Optimized for modern 64-bit phones
-* **[View All Releases](https://github.com/Sinxn-coder/puzzlebox/releases)**
-
----
-
-## Screenshots
-
-<p align="center">
-  <img src="docs/screenshots/home-dark.jpg" width="280" alt="Puzzlebox Dark Mode" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/screenshots/home-light.jpg" width="280" alt="Puzzlebox Light Mode" />
-</p>
-
----
-
-## Included Games
-
-1. **Chess** - Tactics puzzles, on-device AI opponent, and Pass & Play.
-2. **Sudoku** - Classic 9x9 logic placement with notes and error feedback.
-3. **Daily Five** - 5-letter word guessing challenge with position clues.
-4. **Connections** - Group 16 words into 4 themed categories.
-5. **Spelling Bee** - Find as many words as possible using 7 letters.
-6. **Mini Crossword** - Quick, fun daily grid crosswords.
-7. **Strands** - Find themed word paths that fill the grid.
-8. **Pips** - Solvable domino sum-matching puzzle.
-9. **Tiles** - Pattern & color matching pair finder.
-10. **Letter Boxed** - Connect side letters to form word chains.
-11. **Vertex** - Connect dots to satisfy degree rules.
-12. **Nonogram** - Picture logic grid puzzles.
-13. **Binary** - Fill grids with 0s and 1s adhering to binary rules.
-14. **Cages** - Latin square math puzzle grids.
-15. **Word Search** - Classic word finder grid.
-
----
-
-## Have an Idea or Game Suggestion?
-
-Want to see a new puzzle game added to Puzzlebox, or have feedback to make the app even better?
-
-**[Submit a Suggestion on puzzlebox.q04ti.dev](https://puzzlebox.q04ti.dev/#suggestions)**
-
----
-
-## Privacy & Open Source
-
-Puzzlebox respects your privacy:
-* All game progress and stats stay stored locally on your device.
-* No tracking, analytics, or background data collection.
-* Read the full [Privacy Policy](https://puzzlebox.q04ti.dev/#privacy-policy).
+## Local Development
+Open `index.html` in your web browser, or run a local web server:
+```bash
+npx serve .
+```
