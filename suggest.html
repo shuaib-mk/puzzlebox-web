@@ -59,13 +59,16 @@
 
       <div class="form-wrapper suggest-form-wrapper">
         <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">Drop your idea</h2>
-        <p style="color: var(--text-secondary); font-weight: 700; margin-bottom: 2rem;">Suggestions are delivered straight to my inbox (<strong>q04tiofficial@gmail.com</strong>). We review every submission.</p>
+        <p style="color: var(--text-secondary); font-weight: 700; margin-bottom: 2rem;">Suggestions are delivered straight to my inbox. We review every submission.</p>
         
         <form id="suggestionForm" action="https://formsubmit.co/q04tiofficial@gmail.com" method="POST">
           <!-- FormSubmit Configuration -->
           <input type="hidden" name="_subject" value="New Puzzlebox Game Suggestion">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://puzzlebox.q04ti.dev/suggest?sent=1">
+          <!-- Honeypot: real visitors never see or fill this; bots that do are rejected by FormSubmit -->
+          <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off" aria-hidden="true">
 
           <div class="form-group">
             <label for="gameName">Game Name / Type <span style="color:#DC2626;">*</span></label>
@@ -77,7 +80,7 @@
           </div>
           <div class="form-group">
             <label for="senderEmail">Your Email (Optional, if you'd like a reply)</label>
-            <input type="email" id="senderEmail" name="Sender Email" class="form-control" placeholder="you@example.com">
+            <input type="email" id="senderEmail" name="email" class="form-control" placeholder="you@example.com">
           </div>
           <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; cursor: pointer;">Submit Suggestion</button>
 
@@ -90,7 +93,7 @@
   <footer>
     <div class="footer-links">
       <div class="footer-col footer-brand" style="flex: 1 1 250px; margin-bottom: 2rem;">
-        <a href="#" class="logo" style="display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.5rem; color: #000; text-decoration: none; margin-bottom: 0.5rem;">
+        <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.5rem; color: #000; text-decoration: none; margin-bottom: 0.5rem;">
           <img src="assets/puzzlebox-logo.svg" alt="Puzzlebox Logo" style="width: 32px; height: 32px;">
           Puzzlebox
         </a>
@@ -108,14 +111,13 @@
         <h4>Company</h4>
         <ul>
           <li><a href="https://q04ti.dev">About q04ti</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="https://q04ti.dev" target="_blank" rel="noopener">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <ul>
           <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -137,9 +139,23 @@
     const submitBtn = document.getElementById('submitBtn');
     const statusDiv = document.getElementById('formStatus');
 
+    function showStatus(message, type) {
+      statusDiv.textContent = message;
+      statusDiv.className = 'form-status ' + type;
+      statusDiv.style.display = 'block';
+    }
+
+    // Visitors without JavaScript submit normally and come back here with ?sent=1
+    if (new URLSearchParams(window.location.search).get('sent') === '1') {
+      showStatus('Awesome! Your suggestion has been sent. Thanks for helping improve Puzzlebox!', 'success');
+    }
+
     if (form) {
+      let sending = false;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (sending) return;
+        sending = true;
 
         submitBtn.disabled = true;
         const originalText = submitBtn.textContent;
@@ -158,25 +174,20 @@
             body: formData
           });
 
-          const data = await response.json();
+          const data = await response.json().catch(() => ({}));
 
           if (response.ok && (data.success === 'true' || data.success === true)) {
-            statusDiv.textContent = 'Awesome! Your suggestion has been sent directly to q04tiofficial@gmail.com. Thanks for helping improve Puzzlebox!';
-            statusDiv.classList.add('success');
-            statusDiv.style.display = 'block';
+            showStatus('Awesome! Your suggestion has been sent. Thanks for helping improve Puzzlebox!', 'success');
             form.reset();
           } else {
             throw new Error(data.message || 'Submission failed');
           }
         } catch (err) {
-          // If AJAX is blocked or fails, submit via native POST
-          statusDiv.textContent = 'Direct connection interrupted. Redirecting to secure submission...';
-          statusDiv.classList.add('error');
-          statusDiv.style.display = 'block';
-          setTimeout(() => {
-            form.submit();
-          }, 800);
+          // Don't re-send automatically: the first request may have gone through,
+          // and re-posting would create a duplicate. Let the visitor retry.
+          showStatus('Sorry, your suggestion could not be sent. Please check your connection and try again.', 'error');
         } finally {
+          sending = false;
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
         }
