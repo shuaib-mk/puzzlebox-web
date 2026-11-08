@@ -27,5 +27,17 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/suggestions",
+      "destination": "/suggest",
+      "permanent": true
+    },
+    {
+      "source": "/suggestions.html",
+      "destination": "/suggest",
+      "permanent": true
+    }
   ]
 }
